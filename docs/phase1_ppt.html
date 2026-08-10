@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTSS-2 — Smart CCTV AI Phase 1</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --navy: #0a1f44;
+    --accent: #1a73e8;
+    --accent-light: #e8f0fe;
+    --card-bg: #f0f4fa;
+    --card-border: #d0dcea;
+    --white: #fff;
+    --text: #1a1a2e;
+    --text-muted: #5a6785;
+    --green: #0d9488;
+    --orange: #d97706;
+    --red: #dc2626;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: var(--text); }
+
+  .slide {
+    background: var(--white); border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin: 2rem auto; max-width: 1000px; overflow: hidden; page-break-inside: avoid;
+  }
+  .slide-header {
+    background: var(--navy); padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .slide-header h2 { color: var(--white); font-size: 1.35rem; font-weight: 800; }
+  .slide-header .num { color: rgba(255,255,255,0.5); font-size: 1.5rem; font-weight: 800; }
+  .slide-body { padding: 2rem; }
+  .slide-footer {
+    background: var(--navy); padding: 0.6rem 2rem; text-align: center;
+    color: rgba(255,255,255,0.5); font-size: 0.7rem;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .grid.single { grid-template-columns: 1fr; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 1.5rem;
+  }
+  .card.full { grid-column: 1 / -1; }
+  .card h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.75rem; }
+  .card p, .card li { font-size: 0.88rem; line-height: 1.65; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 0.3rem 0 0.3rem 1.25rem; position: relative; }
+  .card ul li::before {
+    content: ''; position: absolute; left: 0; top: 0.65rem;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  }
+
+  .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 0; }
+  .flow-step {
+    background: var(--accent); color: var(--white); padding: 0.5rem 1rem;
+    border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+  }
+  .flow-arrow { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+
+  .badge {
+    display: inline-block; background: var(--accent-light); color: var(--accent);
+    font-size: 0.78rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 6px; margin: 0.15rem;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.5rem; }
+  th { background: var(--navy); color: var(--white); text-align: left; padding: 0.6rem 0.75rem; font-weight: 600; }
+  td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--card-border); }
+  tr:nth-child(even) { background: var(--card-bg); }
+
+  .tag { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 4px; }
+  .tag-high { background: #d1fae5; color: #065f46; }
+  .tag-med { background: #fef3c7; color: #92400e; }
+  .tag-low { background: #fce7f3; color: #9d174d; }
+  .tag-done { background: #d1fae5; color: #065f46; }
+  .tag-planned { background: #e0e7ff; color: #3730a3; }
+  .tag-na { background: #f3f4f6; color: #6b7280; }
+
+  @media print {
+    .slide { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<div class="slide">
+  <div class="slide-header" style="padding: 2.5rem 2rem;">
+    <div>
+      <h2 style="font-size: 1.75rem;">PTSS-2 — Core AI Pipeline</h2>
+      <p style="color: rgba(255,255,255,0.7); margin-top: 0.5rem; font-size: 0.95rem;">
+        Phase 1: Multi-Camera Ingestion + Detection & Tracking + Behaviour Classification
+      </p>
+    </div>
+    <span class="num">01</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Delivered Modules</h3>
+        <ul>
+          <li><strong>M1</strong> — Multi-Camera Ingestion (threaded capture, frame queue)</li>
+          <li><strong>M2</strong> — Detection & Tracking (YOLOv8n + ByteTrack)</li>
+          <li><strong>M3</strong> — Behaviour Classification (MediaPipe + rule-based)</li>
+          <li><strong>Pipeline</strong> — M1 → M2 → M3 integrated orchestrator</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Key Technologies</h3>
+        <div style="margin-top: 0.5rem;">
+          <span class="badge">YOLOv8n</span>
+          <span class="badge">ByteTrack</span>
+          <span class="badge">MediaPipe Pose</span>
+          <span class="badge">OpenCV</span>
+          <span class="badge">supervision</span>
+          <span class="badge">Python 3.10+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 2: Literature Review Summary -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>Literature Review — Key Findings</h2>
+    <span class="num">02</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Person Detection</h3>
+        <ul>
+          <li>YOLOv8 family: nano (3.2M params) to xlarge (68.2M params).</li>
+          <li>YOLOv8n: 37.3 mAP on COCO, 25-40 FPS on CPU.</li>
+          <li>Best speed/accuracy trade-off for real-time surveillance.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Multi-Object Tracking</h3>
+        <ul>
+          <li>ByteTrack (ECCV 2022): uses low-confidence detections as secondary matches.</li>
+          <li>2-3x fewer ID switches than SORT on MOT17.</li>
+          <li>No Re-ID features needed — pure motion-based.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Pose Estimation</h3>
+        <ul>
+          <li>MediaPipe BlazePose: 33 keypoints, real-time on CPU.</li>
+          <li>~92% PCKh on MPII dataset (full complexity).</li>
+          <li>Optimized for mobile/edge — no GPU required.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Behaviour Classification</h3>
+        <ul>
+          <li>ST-GCN (~82% NTU-RGB+D) — graph-based, computationally heavy.</li>
+          <li>LSTM on keypoints (~75%) — simpler, real-time feasible.</li>
+          <li>Rule-based: deployed in commercial systems (BriefCam, Avigilon). Understudied in literature.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 3: Research Gaps -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>Identified Research & Technical Gaps</h2>
+    <span class="num">03</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid single">
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th>Gap</th><th>Area</th><th>Our Approach</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Multi-camera ingestion absent in most open-source systems</td>
+              <td>M1</td>
+              <td>Thread-per-camera with bounded queue architecture</td>
+            </tr>
+            <tr>
+              <td>Rule-based surveillance classifiers understudied in literature</td>
+              <td>M3</td>
+              <td>Implemented 5 heuristic rules with honest reliability assessment</td>
+            </tr>
+            <tr>
+              <td>No standard surveillance behaviour dataset with pose annotations</td>
+              <td>M3</td>
+              <td>Rule-based approach avoids training data requirement; data collection planned</td>
+            </tr>
+            <tr>
+              <td>Pose estimation quality degrades on surveillance camera angles</td>
+              <td>M3</td>
+              <td>Per-crop pose estimation (not per-frame) improves quality for distant subjects</td>
+            </tr>
+            <tr>
+              <td>Cross-camera track association is an open problem</td>
+              <td>M2</td>
+              <td>Deferred to Phase 2 (requires Re-ID network)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 4: M1 Implementation -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>M1 — Multi-Camera Ingestion</h2>
+    <span class="num">04</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>What We Built</h3>
+        <ul>
+          <li><strong>CameraSource</strong>: threaded capture for webcam, RTSP, video files.</li>
+          <li><strong>CameraManager</strong>: manages N cameras, round-robin frame retrieval.</li>
+          <li><strong>Preprocessor</strong>: crop, letterbox, color conversion.</li>
+          <li>Drop-oldest buffering: prioritizes recency over completeness.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Design Decisions</h3>
+        <ul>
+          <li>Thread per camera (not asyncio) — OpenCV releases GIL during read().</li>
+          <li>Bounded queue (maxsize=64) — prevents memory blowup.</li>
+          <li>CAP_PROP_BUFFERSIZE=1 — minimizes internal OpenCV latency.</li>
+          <li>Daemon threads — clean shutdown on pipeline stop.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 5: M2 Implementation -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>M2 — Detection & Tracking</h2>
+    <span class="num">05</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Detection Pipeline</h3>
+        <div class="flow">
+          <span class="flow-step">Frame</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">YOLOv8n</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Person Filter</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">sv.Detections</span>
+        </div>
+        <div class="flow">
+          <span class="flow-step">sv.Detections</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">ByteTrack</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Tracked IDs</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">TrackStore</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Key Metrics</h3>
+        <ul>
+          <li>YOLOv8n: 3.2M params, ~37.3 mAP50-95 (COCO).</li>
+          <li>ByteTrack: &lt; 2ms association per frame.</li>
+          <li>TrackStore: 300-point history per track, velocity/displacement computation.</li>
+          <li>Warmup pass eliminates first-inference latency.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 6: M3 Implementation -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>M3 — Behaviour Classification</h2>
+    <span class="num">06</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Rule-Based Classifier</h3>
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Method</th><th>Reliability</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Loitering</td><td>Centroid displacement &lt; R for &gt; T sec</td><td><span class="tag tag-high">HIGH</span></td></tr>
+            <tr><td>Sudden Running</td><td>Velocity spike ratio &gt; 3x baseline</td><td><span class="tag tag-high">HIGH</span></td></tr>
+            <tr><td>Fighting</td><td>Proximity + rapid limb movement</td><td><span class="tag tag-med">MEDIUM</span></td></tr>
+            <tr><td>Crowd Surge</td><td>Track density &gt; threshold</td><td><span class="tag tag-med">MEDIUM</span></td></tr>
+            <tr><td>Theft Posture</td><td>Crouching + reaching (experimental)</td><td><span class="tag tag-low">LOW</span></td></tr>
+            <tr><td>Unattended Objects</td><td>Not feasible in person-only pipeline</td><td><span class="tag tag-na">DEFERRED</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Pose Architecture</h3>
+        <ul>
+          <li>MediaPipe Pose: 33 keypoints per person crop.</li>
+          <li>Per-crop estimation (not per-frame) — better quality.</li>
+          <li>Sliding window buffer (30 frames) per track ID.</li>
+          <li>Classifier facade: rules now, LSTM/GRU later.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 7: Integration -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>Pipeline Integration — M1 &rarr; M2 &rarr; M3</h2>
+    <span class="num">07</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid single">
+      <div class="card">
+        <h3>End-to-End Data Flow</h3>
+        <div class="flow">
+          <span class="flow-step">Camera (thread)</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Frame Queue</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">YOLOv8n Detect</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">ByteTrack</span>
+        </div>
+        <div class="flow">
+          <span class="flow-step">Crop Person</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">MediaPipe Pose</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Rule Classifier</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Annotated Display</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Output</h3>
+        <ul>
+          <li>Annotated video with color-coded bounding boxes (green/orange/red).</li>
+          <li>Track IDs, event labels, confidence scores overlaid.</li>
+          <li>Optional pose skeleton visualization.</li>
+          <li>Real-time FPS counter and active track count.</li>
+          <li>BehaviourEvent objects with full metadata for logging/alerting.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 8: Performance -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>Performance & Limitations</h2>
+    <span class="num">08</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Expected Performance (CPU)</h3>
+        <table>
+          <thead><tr><th>Component</th><th>Latency</th></tr></thead>
+          <tbody>
+            <tr><td>YOLOv8n detection</td><td>25-40ms/frame</td></tr>
+            <tr><td>ByteTrack tracking</td><td>&lt; 2ms/frame</td></tr>
+            <tr><td>MediaPipe Pose</td><td>10-20ms/person</td></tr>
+            <tr><td>Rule classification</td><td>&lt; 1ms/track</td></tr>
+            <tr><td><strong>Total (1 person)</strong></td><td><strong>~50-60ms (16-20 FPS)</strong></td></tr>
+            <tr><td><strong>Total (2 persons)</strong></td><td><strong>~70-90ms (11-14 FPS)</strong></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.5rem; font-size: 0.78rem; color: var(--text-muted);">
+          Note: These are expected targets. Run <code>scripts/benchmark.py</code> for actual measurements.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Current Limitations</h3>
+        <ul>
+          <li>CPU-only (no GPU acceleration).</li>
+          <li>No cross-camera track association.</li>
+          <li>No ML-based classifier (rule-based only).</li>
+          <li>Unattended object detection not feasible.</li>
+          <li>Pose quality degrades on top-down camera angles.</li>
+          <li>No context awareness (zone-based rules).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 9: What's Next -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>What's Next — Phase 2</h2>
+    <span class="num">09</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid">
+      <div class="card">
+        <h3>Phase 2 Modules</h3>
+        <ul>
+          <li><strong>M4</strong> — Face Recognition (FaceNet/DeepFace embeddings)</li>
+          <li><strong>M5</strong> — Backend API, JWT/RBAC, cloud deployment</li>
+          <li><strong>M6</strong> — Web dashboard, analytics, mobile push alerts</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Phase 1 Improvements Planned</h3>
+        <ul>
+          <li>GPU-accelerated inference.</li>
+          <li>LSTM/GRU classifier trained on labeled data.</li>
+          <li>Zone-based context awareness.</li>
+          <li>Cross-camera track association.</li>
+          <li>Performance benchmarking with real surveillance footage.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+<!-- Slide 10: References -->
+<div class="slide">
+  <div class="slide-header">
+    <h2>References</h2>
+    <span class="num">10</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid single">
+      <div class="card">
+        <ul>
+          <li>Jocher, G. et al. (2023). "Ultralytics YOLOv8." GitHub.</li>
+          <li>Zhang, Y. et al. (2022). "ByteTrack: Multi-Object Tracking by Associating Every Detection Box." ECCV.</li>
+          <li>Bazarevsky, V. et al. (2020). "BlazePose: On-device Real-time Body Pose Tracking." CVPR Workshop.</li>
+          <li>Bewley, A. et al. (2016). "Simple Online and Realtime Tracking." ICIP.</li>
+          <li>Yan, S. et al. (2018). "Spatial Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition." AAAI.</li>
+          <li>Du, Y. et al. (2015). "Hierarchical RNN for Skeleton Based Action Recognition." CVPR.</li>
+          <li>Sultani, W. et al. (2018). "Real-World Anomaly Detection in Surveillance Videos." CVPR.</li>
+          <li>Roboflow (2023). "supervision" Python library. GitHub.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; PTSS-2 Progress Seminar</div>
+</div>
+
+</body>
+</html>

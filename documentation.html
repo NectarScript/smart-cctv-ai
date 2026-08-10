@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart CCTV AI — Master Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --navy: #0a1f44;
+    --navy-light: #132d5e;
+    --accent: #1a73e8;
+    --accent-light: #e8f0fe;
+    --card-bg: #f0f4fa;
+    --card-border: #d0dcea;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #5a6785;
+    --bullet: #1a73e8;
+    --success: #0d9488;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --ptss1: #1a73e8;
+    --ptss2: #7c3aed;
+    --ptss3: #0d9488;
+    --ptss4: #d97706;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f5f7fb;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  .top-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .top-nav .logo {
+    color: var(--white); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em;
+  }
+  .top-nav .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 0.25rem; }
+  .nav-links a {
+    color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.82rem;
+    padding: 0.4rem 0.75rem; border-radius: 6px; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--white); background: rgba(255,255,255,0.1);
+  }
+
+  /* ── SIDEBAR TOC ── */
+  .sidebar {
+    position: fixed; top: 64px; left: 0; width: 260px; bottom: 0;
+    background: var(--white); border-right: 1px solid var(--card-border);
+    overflow-y: auto; padding: 1.5rem 0; z-index: 50;
+  }
+  .sidebar h3 {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-muted); padding: 0 1.25rem; margin-bottom: 0.75rem;
+  }
+  .sidebar .ptss-group { margin-bottom: 1.5rem; }
+  .sidebar .ptss-label {
+    font-size: 0.75rem; font-weight: 700; padding: 0.4rem 1.25rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .sidebar .ptss-label .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .sidebar a {
+    display: block; color: var(--text); text-decoration: none;
+    font-size: 0.82rem; padding: 0.35rem 1.25rem 0.35rem 2.5rem;
+    transition: all 0.15s; border-left: 3px solid transparent;
+  }
+  .sidebar a:hover {
+    background: var(--accent-light); color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: 260px; margin-top: 64px; padding: 2rem 2.5rem 4rem;
+    max-width: 1100px;
+  }
+
+  /* ── SLIDE (page) ── */
+  .slide {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    page-break-inside: avoid;
+  }
+  .slide-header {
+    background: var(--navy);
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .slide-header h2 {
+    color: var(--white); font-size: 1.35rem; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .slide-header .page-num {
+    color: rgba(255,255,255,0.5); font-size: 1.5rem; font-weight: 800;
+  }
+  .slide-body { padding: 2rem; }
+
+  .slide-footer {
+    background: var(--navy);
+    padding: 0.6rem 2rem;
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.7rem; font-weight: 500;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .card-grid.single { grid-template-columns: 1fr; }
+  .card-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .card.full-width { grid-column: 1 / -1; }
+  .card h3 {
+    font-size: 1rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 0.75rem;
+  }
+  .card p {
+    font-size: 0.88rem; color: var(--text); line-height: 1.65;
+  }
+  .card ul {
+    list-style: none; padding: 0;
+  }
+  .card ul li {
+    font-size: 0.88rem; padding: 0.3rem 0; padding-left: 1.25rem;
+    position: relative; color: var(--text);
+  }
+  .card ul li::before {
+    content: '';
+    position: absolute; left: 0; top: 0.65rem;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bullet);
+  }
+
+  /* ── PTSS BANNER ── */
+  .ptss-banner {
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--white);
+    position: relative; overflow: hidden;
+  }
+  .ptss-banner::after {
+    content: ''; position: absolute; right: -40px; top: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .ptss-banner h1 {
+    font-size: 1.75rem; font-weight: 900; letter-spacing: -0.03em;
+    margin-bottom: 0.25rem;
+  }
+  .ptss-banner .subtitle {
+    font-size: 0.95rem; opacity: 0.85; font-weight: 500;
+  }
+  .ptss-banner .meta {
+    margin-top: 1rem; display: flex; gap: 2rem; font-size: 0.82rem; opacity: 0.7;
+  }
+  .ptss1-bg { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
+  .ptss2-bg { background: linear-gradient(135deg, #7c3aed, #4c1d95); }
+  .ptss3-bg { background: linear-gradient(135deg, #0d9488, #065f46); }
+  .ptss4-bg { background: linear-gradient(135deg, #d97706, #92400e); }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 0.5rem; padding: 1rem 0;
+  }
+  .flow-step {
+    background: var(--accent); color: var(--white);
+    padding: 0.5rem 1rem; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 600; white-space: nowrap;
+  }
+  .flow-arrow { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+
+  /* ── MODULE GRID ── */
+  .module-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  .module-card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 1.25rem; border-left: 4px solid var(--accent);
+  }
+  .module-card h4 {
+    font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.35rem;
+  }
+  .module-card p {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;
+  }
+
+  /* ── TIMELINE / ROADMAP ── */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 3px; background: var(--card-border); border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 1.5rem; padding-left: 1.5rem;
+  }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -1.55rem; top: 0.35rem;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 3px solid var(--accent); background: var(--white);
+  }
+  .timeline-item.done::before { background: var(--accent); }
+  .timeline-item h4 {
+    font-size: 0.9rem; font-weight: 700; color: var(--navy);
+  }
+  .timeline-item p {
+    font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;
+  }
+  .timeline-item .tag {
+    display: inline-block; font-size: 0.7rem; font-weight: 600;
+    padding: 0.15rem 0.5rem; border-radius: 4px; margin-top: 0.3rem;
+  }
+  .tag-done { background: #d1fae5; color: #065f46; }
+  .tag-wip { background: #fef3c7; color: #92400e; }
+  .tag-planned { background: #e0e7ff; color: #3730a3; }
+
+  /* ── TECH BADGES ── */
+  .tech-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .badge {
+    background: var(--accent-light); color: var(--accent);
+    font-size: 0.78rem; font-weight: 600; padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+  }
+
+  /* ── TABLE ── */
+  .doc-table {
+    width: 100%; border-collapse: collapse; font-size: 0.85rem;
+  }
+  .doc-table th {
+    background: var(--navy); color: var(--white); text-align: left;
+    padding: 0.75rem 1rem; font-weight: 600;
+  }
+  .doc-table td {
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--card-border);
+  }
+  .doc-table tr:nth-child(even) { background: var(--card-bg); }
+
+  /* ── PRINT ── */
+  @media print {
+    .top-nav, .sidebar { display: none; }
+    .main { margin-left: 0; margin-top: 0; }
+    .slide { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+    .ptss-banner { break-before: page; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .card-grid { grid-template-columns: 1fr; }
+    .module-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ TOP NAV ═══════════════ -->
+<nav class="top-nav">
+  <div class="logo">SMART CCTV <span>AI</span></div>
+  <div class="nav-links">
+    <a href="#ptss1" class="active">PTSS-1</a>
+    <a href="#ptss2">PTSS-2</a>
+    <a href="#ptss3">PTSS-3</a>
+    <a href="#ptss4">PTSS-4</a>
+    <a href="#roadmap">Roadmap</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <h3>Documentation Index</h3>
+
+  <div class="ptss-group">
+    <div class="ptss-label"><span class="dot" style="background:var(--ptss1)"></span> PTSS-1 — Foundation</div>
+    <a href="#introduction">Introduction</a>
+    <a href="#literature-survey">Literature Survey</a>
+    <a href="#aim-objective">Aim &amp; Objective</a>
+    <a href="#methodology">Proposed Methodology</a>
+  </div>
+
+  <div class="ptss-group">
+    <div class="ptss-label"><span class="dot" style="background:var(--ptss2)"></span> PTSS-2 — Core AI</div>
+    <a href="#module-distribution">Module Distribution</a>
+    <a href="#module1">M1 — Multi-Camera Ingestion</a>
+    <a href="#module2">M2 — Detection &amp; Tracking</a>
+    <a href="#module3">M3 — Behaviour Classification</a>
+  </div>
+
+  <div class="ptss-group">
+    <div class="ptss-label"><span class="dot" style="background:var(--ptss3)"></span> PTSS-3 — Platform</div>
+    <a href="#module4">M4 — Face Recognition</a>
+    <a href="#module5">M5 — Backend &amp; Security</a>
+    <a href="#module6">M6 — Dashboard &amp; Alerts</a>
+  </div>
+
+  <div class="ptss-group">
+    <div class="ptss-label"><span class="dot" style="background:var(--ptss4)"></span> PTSS-4 — Final</div>
+    <a href="#software-req">Software Requirements</a>
+    <a href="#integration">Integration &amp; Testing</a>
+    <a href="#future-work">Future Work</a>
+    <a href="#references">References</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<div class="main">
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  PTSS-1 — Foundation & Research               ║
+     ╚══════════════════════════════════════════════╝ -->
+<div id="ptss1" class="ptss-banner ptss1-bg">
+  <h1>PTSS-1 — Foundation &amp; Research</h1>
+  <div class="subtitle">Problem definition, literature review, methodology design</div>
+  <div class="meta">
+    <span>Deliverable: Synopsis + Literature Survey</span>
+    <span>Duration: Weeks 1–4</span>
+  </div>
+</div>
+
+<!-- Slide 01: Introduction -->
+<div class="slide" id="introduction">
+  <div class="slide-header">
+    <h2>Introduction</h2>
+    <span class="page-num">01</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Project Background</h3>
+        <p>Smart CCTV AI is an intelligent surveillance platform designed to detect people, analyse behaviour and generate alerts in real time. The mini project used YOLOv8 for person detection, MediaPipe pose estimation, a PyTorch classifier and a FastAPI + WebSocket backend.</p>
+      </div>
+      <div class="card">
+        <h3>Need for the Mega Project</h3>
+        <ul>
+          <li>Single-camera processing is limited in practical deployments.</li>
+          <li>The system needs multi-camera ingestion, identity awareness and cloud accessibility.</li>
+          <li>Secure role-based access and richer alerting are required.</li>
+          <li>Goal: move from reactive monitoring to proactive protection.</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Mini Project Validation</h3>
+        <ul>
+          <li>Demonstrated real-time detection on a single video stream.</li>
+          <li>Detected fighting, loitering, sudden running, crowd surges and unattended objects.</li>
+          <li>Achieved 20+ FPS on commodity hardware.</li>
+          <li>Validated the core computer-vision pipeline.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 02: Literature Survey -->
+<div class="slide" id="literature-survey">
+  <div class="slide-header">
+    <h2>Literature Survey</h2>
+    <span class="page-num">02</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Existing / Mini-Project Approach</h3>
+        <ul>
+          <li>Single stream from webcam, file or RTSP source.</li>
+          <li>YOLOv8-based person detection with a single behaviour classifier.</li>
+          <li>Local-machine deployment with a live dashboard.</li>
+          <li>Email-based alerting.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Proposed Direction from the Survey</h3>
+        <ul>
+          <li>Extend to concurrent multi-camera processing.</li>
+          <li>Add face recognition against a registered database.</li>
+          <li>Introduce secure cloud deployment.</li>
+          <li>Add mobile push notifications and analytics.</li>
+          <li>Benchmark alternative behaviour-classification models.</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Identified Limitations</h3>
+        <ul>
+          <li>No persistent identity recognition.</li>
+          <li>No concurrent multi-camera ingestion.</li>
+          <li>No cloud deployment or remote accessibility.</li>
+          <li>No role-based access control or audit logging.</li>
+          <li>Limited analytics and reporting.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 03: Aim & Objective -->
+<div class="slide" id="aim-objective">
+  <div class="slide-header">
+    <h2>Aim and Objective</h2>
+    <span class="page-num">03</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid single">
+      <div class="card">
+        <h3>Aim</h3>
+        <p>To build an intelligent, scalable and secure multi-camera surveillance platform that provides real-time detection, behaviour analysis, identity-aware alerts and actionable security insights.</p>
+      </div>
+      <div class="card">
+        <h3>Objectives</h3>
+        <ul>
+          <li>Extend the existing pipeline to support concurrent multi-camera ingestion.</li>
+          <li>Integrate face recognition for registered/known individuals.</li>
+          <li>Deploy the backend as containerized services on a cloud platform.</li>
+          <li>Build a mobile alert application using Firebase Cloud Messaging.</li>
+          <li>Introduce RBAC with audit logging of user and alert actions.</li>
+          <li>Generate incident heatmaps, trends and periodic PDF reports.</li>
+          <li>Benchmark and improve behaviour-classification models.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 04: Proposed Methodology -->
+<div class="slide" id="methodology">
+  <div class="slide-header">
+    <h2>Proposed Methodology</h2>
+    <span class="page-num">04</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid single">
+      <div class="card">
+        <h3>Real-Time AI Pipeline</h3>
+        <div class="flow">
+          <span class="flow-step">Video Input</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Frame Extraction</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Person Detection</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Object Tracking</span>
+        </div>
+        <div class="flow">
+          <span class="flow-step">Pose Estimation</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Behaviour Analysis</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Face Recognition</span>
+        </div>
+        <div class="flow">
+          <span class="flow-step">Event Processing</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Alerts</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Dashboard &amp; Reports</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Processing and Alert Flow</h3>
+        <ul>
+          <li>Capture video from cameras, RTSP/ONVIF streams or files.</li>
+          <li>Extract and preprocess frames for low-latency processing.</li>
+          <li>Use YOLOv8 and ByteTrack for detection and persistent tracking.</li>
+          <li>Use MediaPipe pose landmarks and a PyTorch model for behaviour classification.</li>
+          <li>Match identities using FaceNet/DeepFace against the registered database.</li>
+          <li>Log events in PostgreSQL and deliver email/mobile alerts.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  PTSS-2 — Core AI Modules                     ║
+     ╚══════════════════════════════════════════════╝ -->
+<div id="ptss2" class="ptss-banner ptss2-bg">
+  <h1>PTSS-2 — Core AI Modules</h1>
+  <div class="subtitle">Multi-camera ingestion, detection/tracking, behaviour classification</div>
+  <div class="meta">
+    <span>Deliverable: Modules M1 + M2 + M3 working</span>
+    <span>Duration: Weeks 5–10</span>
+  </div>
+</div>
+
+<!-- Slide 05: Module Distribution -->
+<div class="slide" id="module-distribution">
+  <div class="slide-header">
+    <h2>Module Distribution</h2>
+    <span class="page-num">05</span>
+  </div>
+  <div class="slide-body">
+    <div class="module-grid">
+      <div class="module-card" style="border-left-color: var(--ptss2);">
+        <h4>M1 — Multi-Camera Ingestion</h4>
+        <p>Concurrent video capture and frame preprocessing across multiple camera sources.</p>
+      </div>
+      <div class="module-card" style="border-left-color: var(--ptss2);">
+        <h4>M2 — Detection &amp; Tracking</h4>
+        <p>Real-time person detection with persistent ID tracking across frames.</p>
+      </div>
+      <div class="module-card" style="border-left-color: var(--ptss2);">
+        <h4>M3 — Behaviour Classification</h4>
+        <p>Pose-based behaviour classification with comparative model benchmarking.</p>
+      </div>
+      <div class="module-card" style="border-left-color: var(--ptss3);">
+        <h4>M4 — Face Recognition</h4>
+        <p>Identity matching against a registered database of known individuals.</p>
+      </div>
+      <div class="module-card" style="border-left-color: var(--ptss3);">
+        <h4>M5 — Backend, Security &amp; Cloud</h4>
+        <p>REST/WebSocket API, RBAC, audit logging and containerized cloud hosting.</p>
+      </div>
+      <div class="module-card" style="border-left-color: var(--ptss3);">
+        <h4>M6 — Dashboard, Analytics &amp; Mobile Alerts</h4>
+        <p>Web dashboard, incident analytics/reporting and mobile push-notification app.</p>
+      </div>
+    </div>
+    <div class="card full-width" style="margin-top: 1.25rem;">
+      <h3>Integration</h3>
+      <p>All six modules share responsibility for end-to-end integration into a single surveillance platform.</p>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 06: Module 1 -->
+<div class="slide" id="module1">
+  <div class="slide-header">
+    <h2>Module 1 — Multi-Camera Ingestion &amp; AI Vision</h2>
+    <span class="page-num">06</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Module Responsibility</h3>
+        <ul>
+          <li>Support multiple concurrent camera sources.</li>
+          <li>Accept IP cameras, webcams, RTSP/ONVIF streams and video files.</li>
+          <li>Capture frames at 20+ FPS and preprocess them for AI models.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Key Technologies</h3>
+        <div class="tech-badges">
+          <span class="badge">OpenCV</span>
+          <span class="badge">FFmpeg</span>
+          <span class="badge">RTSP / ONVIF</span>
+          <span class="badge">YOLOv8</span>
+          <span class="badge">MediaPipe</span>
+          <span class="badge">PyTorch</span>
+          <span class="badge">ByteTrack</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>AI Vision Pipeline</h3>
+        <ul>
+          <li>Frame extraction and preprocessing.</li>
+          <li>YOLOv8 person detection with confidence scores.</li>
+          <li>ByteTrack/persistent tracking across frames.</li>
+          <li>MediaPipe pose estimation using 33 body keypoints.</li>
+          <li>PyTorch behaviour classification: Normal / Suspicious / Critical.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Supported Events</h3>
+        <ul>
+          <li>Fighting / aggression</li>
+          <li>Loitering</li>
+          <li>Sudden running</li>
+          <li>Crowd surge</li>
+          <li>Unattended objects</li>
+          <li>Theft attempts</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Expected Result</h3>
+        <p>A low-latency, multi-source AI vision pipeline capable of continuous real-time monitoring.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 06b: Module 2 — Detection & Tracking -->
+<div class="slide" id="module2">
+  <div class="slide-header">
+    <h2>Module 2 — Detection &amp; Tracking</h2>
+    <span class="page-num">07</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Person Detection</h3>
+        <ul>
+          <li>YOLOv8n/s model optimized for real-time inference.</li>
+          <li>Confidence-score filtering to reduce false positives.</li>
+          <li>GPU-accelerated inference via CUDA when available.</li>
+          <li>Batch processing for multi-camera frame queues.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Persistent Tracking (ByteTrack)</h3>
+        <ul>
+          <li>Assign consistent track IDs across consecutive frames.</li>
+          <li>Handle occlusions, re-entries and overlapping bounding boxes.</li>
+          <li>Maintain per-track history for behaviour temporal analysis.</li>
+          <li>Deduplication across camera overlaps (future).</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Detection &rarr; Tracking Flow</h3>
+        <div class="flow">
+          <span class="flow-step">Frame Queue</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">YOLOv8 Inference</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">NMS Filter</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">ByteTrack Association</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Track Store</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 06c: Module 3 — Behaviour Classification -->
+<div class="slide" id="module3">
+  <div class="slide-header">
+    <h2>Module 3 — Behaviour Classification</h2>
+    <span class="page-num">08</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Pose-Based Classification</h3>
+        <ul>
+          <li>MediaPipe extracts 33 body keypoints per person per frame.</li>
+          <li>Keypoint sequences fed into a PyTorch temporal classifier.</li>
+          <li>Outputs: Normal, Suspicious, Critical with confidence scores.</li>
+          <li>Sliding-window approach for temporal context (N-frame sequences).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Model Benchmarking</h3>
+        <ul>
+          <li>Compare LSTM vs GRU vs Transformer-based classifiers.</li>
+          <li>Evaluate accuracy, latency and memory footprint.</li>
+          <li>Use labeled dataset with annotated suspicious events.</li>
+          <li>Select best model for deployment via F1-score and FPS trade-off.</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Classification Pipeline</h3>
+        <div class="flow">
+          <span class="flow-step">Track Crop</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">MediaPipe Pose</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Keypoint Buffer</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">PyTorch Model</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Label + Score</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  PTSS-3 — Platform & Services                  ║
+     ╚══════════════════════════════════════════════╝ -->
+<div id="ptss3" class="ptss-banner ptss3-bg">
+  <h1>PTSS-3 — Platform &amp; Services</h1>
+  <div class="subtitle">Face recognition, backend/security, dashboard &amp; mobile alerts</div>
+  <div class="meta">
+    <span>Deliverable: Modules M4 + M5 + M6 working</span>
+    <span>Duration: Weeks 11–16</span>
+  </div>
+</div>
+
+<!-- Slide 07: Module 4 — Face Recognition -->
+<div class="slide" id="module4">
+  <div class="slide-header">
+    <h2>Module 4 — Face Recognition</h2>
+    <span class="page-num">09</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Identity Matching</h3>
+        <ul>
+          <li>Detect faces within tracked person bounding boxes.</li>
+          <li>Generate 128/512-d embeddings via FaceNet or DeepFace.</li>
+          <li>Compare against a pre-registered database of known individuals.</li>
+          <li>Cosine-similarity threshold for match/no-match decisions.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Registration Flow</h3>
+        <ul>
+          <li>Admin uploads reference images via dashboard.</li>
+          <li>System generates and stores embeddings in PostgreSQL.</li>
+          <li>Supports multiple images per identity for robustness.</li>
+          <li>Re-enrollment and deletion through RBAC-protected API.</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Recognition Pipeline</h3>
+        <div class="flow">
+          <span class="flow-step">Person Crop</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Face Detect</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Align &amp; Embed</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">DB Lookup</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Identity Tag</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 08: Module 5 — Backend, Security & Dashboard -->
+<div class="slide" id="module5">
+  <div class="slide-header">
+    <h2>Module 5 — Backend, Security &amp; Cloud</h2>
+    <span class="page-num">10</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Backend Services</h3>
+        <ul>
+          <li>FastAPI REST API and WebSocket-based real-time updates.</li>
+          <li>PostgreSQL for users, events, logs and analytics data.</li>
+          <li>Redis for caching / queue support.</li>
+          <li>Dockerized services for cloud deployment.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Dashboard &amp; Alerts</h3>
+        <ul>
+          <li>Live video and event updates.</li>
+          <li>Event history with timestamps.</li>
+          <li>Incident analytics, heatmaps and trends.</li>
+          <li>Email alerts and Firebase Cloud Messaging push notifications.</li>
+          <li>Actionable monitoring for security personnel.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Security &amp; Access</h3>
+        <ul>
+          <li>JWT-based authentication.</li>
+          <li>Role-based access: Admin, Security Staff and Viewer.</li>
+          <li>Audit logging of user actions and alert actions.</li>
+          <li>HTTPS-secured transmission and regular backups.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Cloud Readiness</h3>
+        <p>Architecture is designed for containerized deployment on Azure / AWS / GCP and future scalability.</p>
+        <div class="tech-badges" style="margin-top: 0.75rem;">
+          <span class="badge">Docker</span>
+          <span class="badge">Nginx</span>
+          <span class="badge">Uvicorn</span>
+          <span class="badge">GitHub Actions</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 09: Module 6 — Dashboard, Analytics & Mobile Alerts -->
+<div class="slide" id="module6">
+  <div class="slide-header">
+    <h2>Module 6 — Dashboard, Analytics &amp; Mobile Alerts</h2>
+    <span class="page-num">11</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Web Dashboard</h3>
+        <ul>
+          <li>Live multi-camera grid view with WebSocket stream.</li>
+          <li>Real-time event feed with severity colour coding.</li>
+          <li>Camera management panel (add/remove/configure).</li>
+          <li>User and role management for administrators.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Analytics &amp; Reporting</h3>
+        <ul>
+          <li>Incident heatmaps by location and time-of-day.</li>
+          <li>Trend charts: daily/weekly/monthly event counts.</li>
+          <li>Per-camera and per-event-type breakdowns.</li>
+          <li>Exportable PDF reports for stakeholders.</li>
+        </ul>
+      </div>
+      <div class="card full-width">
+        <h3>Mobile Push Notifications (Flutter)</h3>
+        <ul>
+          <li>Firebase Cloud Messaging integration for Android/iOS.</li>
+          <li>Real-time push alerts with event type, camera and snapshot.</li>
+          <li>In-app event history and alert acknowledgement.</li>
+          <li>Role-filtered notification routing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  PTSS-4 — Integration, Testing & Final         ║
+     ╚══════════════════════════════════════════════╝ -->
+<div id="ptss4" class="ptss-banner ptss4-bg">
+  <h1>PTSS-4 — Integration, Testing &amp; Final</h1>
+  <div class="subtitle">End-to-end integration, requirements, future work, references</div>
+  <div class="meta">
+    <span>Deliverable: Complete working platform + documentation</span>
+    <span>Duration: Weeks 17–20</span>
+  </div>
+</div>
+
+<!-- Slide 10: Software Requirements -->
+<div class="slide" id="software-req">
+  <div class="slide-header">
+    <h2>Software Requirements</h2>
+    <span class="page-num">12</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Programming Languages</h3>
+        <ul>
+          <li>Python 3.10+ — backend &amp; AI</li>
+          <li>JavaScript (ES6+) — frontend &amp; dashboard</li>
+          <li>Dart — Flutter mobile application</li>
+          <li>SQL — database queries</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Backend &amp; Data</h3>
+        <div class="tech-badges">
+          <span class="badge">FastAPI</span>
+          <span class="badge">WebSocket</span>
+          <span class="badge">PostgreSQL</span>
+          <span class="badge">SQLAlchemy</span>
+          <span class="badge">Redis</span>
+          <span class="badge">Docker</span>
+          <span class="badge">Nginx</span>
+          <span class="badge">Uvicorn</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>AI / Computer Vision</h3>
+        <div class="tech-badges">
+          <span class="badge">OpenCV</span>
+          <span class="badge">FFmpeg</span>
+          <span class="badge">YOLOv8 / Ultralytics</span>
+          <span class="badge">MediaPipe</span>
+          <span class="badge">PyTorch</span>
+          <span class="badge">FaceNet / DeepFace</span>
+          <span class="badge">ByteTrack</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Frontend / Mobile / DevOps</h3>
+        <div class="tech-badges">
+          <span class="badge">HTML5 / CSS3</span>
+          <span class="badge">Bootstrap 5</span>
+          <span class="badge">Chart.js</span>
+          <span class="badge">Flutter</span>
+          <span class="badge">Firebase Cloud Messaging</span>
+          <span class="badge">GitHub Actions</span>
+          <span class="badge">Azure / AWS / GCP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 11: Integration & Testing -->
+<div class="slide" id="integration">
+  <div class="slide-header">
+    <h2>Integration &amp; Testing</h2>
+    <span class="page-num">13</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid single">
+      <div class="card">
+        <h3>End-to-End Integration Architecture</h3>
+        <div class="flow">
+          <span class="flow-step">Cameras</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">M1 Ingestion</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">M2 Detect+Track</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">M3 Classify</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">M4 Face ID</span>
+        </div>
+        <div class="flow" style="margin-top: 0.5rem;">
+          <span class="flow-step">M5 Backend API</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">PostgreSQL</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">M6 Dashboard</span>
+          <span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Mobile App</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Testing Strategy</h3>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Layer</th><th>Method</th><th>Target</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>AI Models</td><td>Accuracy benchmarks on labeled dataset</td><td>&gt; 90% detection accuracy</td></tr>
+            <tr><td>API</td><td>Pytest + httpx automated tests</td><td>All endpoints covered</td></tr>
+            <tr><td>WebSocket</td><td>Load test with multiple concurrent streams</td><td>&lt; 5s alert latency</td></tr>
+            <tr><td>Frontend</td><td>Manual + browser-based E2E</td><td>Dashboard responsiveness</td></tr>
+            <tr><td>Mobile</td><td>Firebase test lab</td><td>Push notification delivery</td></tr>
+            <tr><td>Integration</td><td>Docker Compose full-stack smoke test</td><td>Camera &rarr; Alert in &lt; 5s</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 12: Future Work -->
+<div class="slide" id="future-work">
+  <div class="slide-header">
+    <h2>Future Work &amp; Expected Impact</h2>
+    <span class="page-num">14</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card">
+        <h3>Future Work</h3>
+        <ul>
+          <li>Expand the platform with scalable multi-camera deployment.</li>
+          <li>Improve behaviour models through comparative benchmarking and continuous improvement.</li>
+          <li>Strengthen remote monitoring, analytics and reporting.</li>
+          <li>Extend notification and cloud capabilities for larger deployments.</li>
+          <li>Use accumulated event data to improve operational insights.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Expected Impact</h3>
+        <ul>
+          <li>Target alert delivery: &lt; 5 seconds.</li>
+          <li>Target detection accuracy: &gt; 90%.</li>
+          <li>Reduce manual monitoring effort by 40&ndash;60%.</li>
+          <li>Enable continuous multi-camera monitoring.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+<!-- Slide 13: References -->
+<div class="slide" id="references">
+  <div class="slide-header">
+    <h2>References / Technologies</h2>
+    <span class="page-num">15</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid single">
+      <div class="card">
+        <h3>Technologies Mentioned in Source Project</h3>
+        <ul>
+          <li>YOLOv8 (Ultralytics) — person detection.</li>
+          <li>MediaPipe — pose estimation.</li>
+          <li>PyTorch — behaviour classification.</li>
+          <li>FastAPI + WebSocket — backend and real-time communication.</li>
+          <li>PostgreSQL + SQLAlchemy — data layer.</li>
+          <li>Redis — caching / queue support.</li>
+          <li>Docker + Nginx — deployment infrastructure.</li>
+          <li>FaceNet / DeepFace — face recognition.</li>
+          <li>ByteTrack — object tracking.</li>
+          <li>Firebase Cloud Messaging — mobile push notifications.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  ROADMAP                                        ║
+     ╚══════════════════════════════════════════════╝ -->
+<div class="slide" id="roadmap">
+  <div class="slide-header" style="background: linear-gradient(135deg, #0a1f44, #1a3a6a);">
+    <h2>7th Semester PTSS Roadmap</h2>
+    <span class="page-num">&star;</span>
+  </div>
+  <div class="slide-body">
+    <div class="card-grid">
+      <div class="card" style="border-left: 4px solid var(--ptss1);">
+        <h3 style="color: var(--ptss1);">PTSS-1 &mdash; Foundation (Weeks 1&ndash;4)</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Week 1&ndash;2: Problem Definition &amp; Literature Survey</h4>
+            <p>Finalize scope, study existing approaches, identify gaps.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 3: Aim, Objectives &amp; Methodology</h4>
+            <p>Define deliverables, design AI pipeline flow.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 4: Synopsis Submission</h4>
+            <p>Submit synopsis document + PTSS-1 presentation.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--ptss2);">
+        <h3 style="color: var(--ptss2);">PTSS-2 &mdash; Core AI (Weeks 5&ndash;10)</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Week 5&ndash;6: M1 — Multi-Camera Ingestion</h4>
+            <p>Concurrent capture, RTSP/ONVIF/webcam support, frame queue.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 7&ndash;8: M2 — Detection &amp; Tracking</h4>
+            <p>YOLOv8 integration, ByteTrack persistent IDs.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 9&ndash;10: M3 — Behaviour Classification</h4>
+            <p>MediaPipe pose + PyTorch classifier, model benchmarking.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--ptss3);">
+        <h3 style="color: var(--ptss3);">PTSS-3 &mdash; Platform (Weeks 11&ndash;16)</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Week 11&ndash;12: M4 — Face Recognition</h4>
+            <p>FaceNet/DeepFace embeddings, registered DB matching.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 13&ndash;14: M5 — Backend &amp; Security</h4>
+            <p>FastAPI, JWT/RBAC, audit logs, Docker/cloud deploy.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 15&ndash;16: M6 — Dashboard &amp; Mobile</h4>
+            <p>Web dashboard, Chart.js analytics, Flutter push app.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 4px solid var(--ptss4);">
+        <h3 style="color: var(--ptss4);">PTSS-4 &mdash; Final (Weeks 17&ndash;20)</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>Week 17&ndash;18: Integration &amp; Testing</h4>
+            <p>End-to-end pipeline, Docker Compose, load testing.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 19: Documentation &amp; Reports</h4>
+            <p>Final documentation, PDF report generation, demo prep.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+          <div class="timeline-item">
+            <h4>Week 20: Final Presentation</h4>
+            <p>Live demo, project report submission, viva.</p>
+            <span class="tag tag-planned">Planned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PTSS Summary Table -->
+    <div style="margin-top: 1.5rem;">
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>PTSS</th>
+            <th>Focus</th>
+            <th>Modules</th>
+            <th>Weeks</th>
+            <th>Key Deliverable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--ptss1)">PTSS-1</strong></td>
+            <td>Foundation &amp; Research</td>
+            <td>—</td>
+            <td>1–4</td>
+            <td>Synopsis + Literature Survey</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--ptss2)">PTSS-2</strong></td>
+            <td>Core AI Modules</td>
+            <td>M1, M2, M3</td>
+            <td>5–10</td>
+            <td>Working AI pipeline (multi-cam + detect + classify)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--ptss3)">PTSS-3</strong></td>
+            <td>Platform &amp; Services</td>
+            <td>M4, M5, M6</td>
+            <td>11–16</td>
+            <td>Face ID + Backend + Dashboard + Mobile</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--ptss4)">PTSS-4</strong></td>
+            <td>Integration &amp; Final</td>
+            <td>All</td>
+            <td>17–20</td>
+            <td>Complete platform + documentation + demo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="slide-footer">SMART CCTV AI &bull; Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection Platform</div>
+</div>
+
+</div><!-- /.main -->
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('.ptss-banner, .slide');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) {
+        current = s.id || '';
+      }
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>

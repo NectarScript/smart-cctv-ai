@@ -1,0 +1,39 @@
+log_level: INFO
+frame_queue_maxsize: 64
+pose_model_complexity: 1
+pose_every_n_frames: 1
+
+cameras:
+  - source_id: default
+    source: 0
+    source_type: webcam
+    fps_target: 25
+    resolution: [640, 480]
+
+detection:
+  model_name: yolov8n.pt
+  confidence_threshold: 0.45
+  person_class_id: 0
+  device: cpu
+  input_size: 640
+
+tracking:
+  track_activation_threshold: 0.25
+  lost_track_buffer: 30
+  minimum_matching_threshold: 0.8
+  frame_rate: 25
+
+behaviour:
+  keypoint_window_size: 30
+  min_keypoint_frames: 10
+  loiter_time_threshold: 15.0
+  loiter_radius_px: 50
+  velocity_spike_factor: 3.0
+  sudden_run_min_history_sec: 3.0
+  proximity_threshold_px: 80
+  limb_velocity_threshold: 15.0
+  fighting_sustained_frames: 5
+  crowd_density_threshold: 5
+  crowd_region_radius_px: 200
+  theft_posture_enabled: false
+  theft_posture_duration_sec: 3.0
