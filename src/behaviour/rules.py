@@ -105,7 +105,7 @@ class RuleBasedClassifier:
         if max_disp >= self._cfg.loiter_radius_px:
             return None
 
-        avg_vel = self._avg_velocity(recent)
+        avg_vel = self._smoothed_velocity(recent)
         if avg_vel < self._cfg.loiter_min_displacement_px:
             return None
 
@@ -320,7 +320,7 @@ class RuleBasedClassifier:
                 dy = seq[i][idx][1] - seq[i - 1][idx][1]
                 velocities.append(np.sqrt(dx * dx + dy * dy))
             avg_vel = np.mean(velocities)
-            if avg_vel > self._cfg.limb_velocity_threshold / 100.0:
+            if avg_vel > self._cfg.limb_velocity_threshold / 50.0:
                 consecutive += 1
             else:
                 consecutive = 0

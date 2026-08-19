@@ -40,3 +40,4 @@ tests/fixtures/*.jpg
 # Output
 output/
 runs/
+uploads/

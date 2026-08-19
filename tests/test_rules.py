@@ -31,7 +31,12 @@ def test_loitering_detected():
         loiter_time_threshold=5.0, loiter_radius_px=50, loiter_min_displacement_px=1.0,
     )
     classifier = RuleBasedClassifier(cfg)
-    centroids = [(100 + np.random.randint(-5, 5), 100 + np.random.randint(-5, 5)) for _ in range(200)]
+    # Simulate wandering in a small area — consistent movement but within radius
+    centroids = []
+    for i in range(200):
+        angle = i * 0.15
+        r = 15
+        centroids.append((100 + r * np.cos(angle), 100 + r * np.sin(angle)))
     history = _make_history(1, centroids, duration=10.0)
     event = classifier.classify(1, history, None, [], time.time())
     assert event.event_type == EventType.LOITERING
