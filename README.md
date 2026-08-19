@@ -31,11 +31,41 @@ Camera Sources → M1 Ingestion → M2 Detection+Tracking → M3 Behaviour Class
 | Crowd Surge | MEDIUM | Track density threshold |
 | Theft Posture | LOW (experimental) | Crouching + reaching heuristic |
 
-## Setup
+## Quick Start
+
+### Prerequisites
+
+- Python 3.10–3.12 (3.11 recommended)
+- Conda or venv
+- Webcam (optional — works with video files too)
+
+### Option A: Conda (recommended)
 
 ```bash
-# Python 3.10+ required
+conda create -n smartcctv python=3.11 -y
+conda activate smartcctv
 pip install -r requirements.txt
+```
+
+### Option B: venv
+
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Verify Installation
+
+```bash
+# Check all dependencies load
+python -c "import cv2, ultralytics, supervision, mediapipe, torch; print('All OK')"
+
+# Run test suite (30 tests, no GPU needed)
+pytest tests/ -v
 ```
 
 ## Usage
@@ -47,6 +77,8 @@ python scripts/demo_single.py --source 0
 
 ### Video file
 ```bash
+python scripts/demo_video.py --input path/to/video.mp4 --show
+# Save annotated output:
 python scripts/demo_video.py --input video.mp4 --output annotated.mp4
 ```
 
@@ -59,6 +91,8 @@ python scripts/demo_multi.py --sources 0 1 video.mp4
 ```bash
 python scripts/benchmark.py --input video.mp4 --frames 300
 ```
+
+Press `q` to quit any demo window.
 
 ### Tests
 ```bash

@@ -1,19 +1,19 @@
 # Core
-opencv-python>=4.8.0,<4.11
-numpy>=1.24.0,<2.0
+opencv-python>=4.8.0
+numpy>=1.24.0
 
 # Detection (M2)
-ultralytics>=8.3.0,<8.4
+ultralytics>=8.3.0
 
 # Tracking (M2)
-supervision>=0.25.0,<0.26
+supervision>=0.25.0
 
 # Pose estimation (M3)
-mediapipe>=0.10.14,<0.11
+mediapipe>=0.10.14
 
 # ML framework
-torch>=2.1.0,<2.6
-torchvision>=0.16.0,<0.21
+torch>=2.1.0
+torchvision>=0.16.0
 
 # Configuration
 pyyaml>=6.0,<7.0
