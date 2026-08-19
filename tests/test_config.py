@@ -8,7 +8,7 @@ def test_default_config_loads():
     assert config.detection.model_name == "yolov8n.pt"
     assert config.detection.confidence_threshold == 0.45
     assert config.tracking.lost_track_buffer == 30
-    assert config.behaviour.loiter_time_threshold == 15.0
+    assert config.behaviour.loiter_time_threshold == 30.0
 
 
 def test_camera_config_infers_webcam():

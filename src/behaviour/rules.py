@@ -94,7 +94,7 @@ class RuleBasedClassifier:
             return None
 
         n_recent = min(len(history.centroids), int(self._cfg.loiter_time_threshold * 25))
-        if n_recent < 10:
+        if n_recent < 25:
             return None
         recent = list(history.centroids)[-n_recent:]
         pts = np.array(recent)
@@ -103,6 +103,10 @@ class RuleBasedClassifier:
         max_disp = float(np.max(dists))
 
         if max_disp >= self._cfg.loiter_radius_px:
+            return None
+
+        total_path = self._total_path_length(recent)
+        if total_path < self._cfg.loiter_min_displacement_px:
             return None
 
         severity = BehaviourLabel.CRITICAL if duration > self._cfg.loiter_time_threshold * 2 else BehaviourLabel.SUSPICIOUS
@@ -130,15 +134,15 @@ class RuleBasedClassifier:
     ) -> Optional[BehaviourEvent]:
         if history.duration < self._cfg.sudden_run_min_history_sec:
             return None
-        if len(history.centroids) < 30:
+        if len(history.centroids) < 50:
             return None
 
         pts = list(history.centroids)
         n = len(pts)
-        recent_window = min(25, n // 2)
-        baseline_window = min(50, n - recent_window)
+        recent_window = min(25, n // 3)
+        baseline_window = min(75, n - recent_window)
 
-        if baseline_window < 10:
+        if baseline_window < 20:
             return None
 
         recent = pts[-recent_window:]
@@ -147,8 +151,11 @@ class RuleBasedClassifier:
         recent_vel = self._avg_velocity(recent)
         baseline_vel = self._avg_velocity(baseline)
 
-        if baseline_vel < 1.0:
-            baseline_vel = 1.0
+        if recent_vel < self._cfg.sudden_run_min_velocity:
+            return None
+
+        if baseline_vel < self._cfg.velocity_min_baseline:
+            baseline_vel = self._cfg.velocity_min_baseline
 
         ratio = recent_vel / baseline_vel
         if ratio < self._cfg.velocity_spike_factor:
@@ -331,3 +338,14 @@ class RuleBasedClassifier:
             dy = points[i][1] - points[i - 1][1]
             dists.append(np.sqrt(dx * dx + dy * dy))
         return float(np.mean(dists))
+
+    @staticmethod
+    def _total_path_length(points: list) -> float:
+        if len(points) < 2:
+            return 0.0
+        total = 0.0
+        for i in range(1, len(points)):
+            dx = points[i][0] - points[i - 1][0]
+            dy = points[i][1] - points[i - 1][1]
+            total += np.sqrt(dx * dx + dy * dy)
+        return total

@@ -1,7 +1,6 @@
 log_level: INFO
 frame_queue_maxsize: 64
-pose_model_complexity: 1
-pose_every_n_frames: 1
+pose_every_n_frames: 3
 
 cameras:
   - source_id: default
@@ -25,15 +24,18 @@ tracking:
 
 behaviour:
   keypoint_window_size: 30
-  min_keypoint_frames: 10
-  loiter_time_threshold: 15.0
-  loiter_radius_px: 50
-  velocity_spike_factor: 3.0
-  sudden_run_min_history_sec: 3.0
-  proximity_threshold_px: 80
-  limb_velocity_threshold: 15.0
-  fighting_sustained_frames: 5
-  crowd_density_threshold: 5
+  min_keypoint_frames: 15
+  loiter_time_threshold: 30.0
+  loiter_radius_px: 40
+  loiter_min_displacement_px: 5.0
+  velocity_spike_factor: 4.0
+  velocity_min_baseline: 3.0
+  sudden_run_min_velocity: 8.0
+  sudden_run_min_history_sec: 5.0
+  proximity_threshold_px: 60
+  limb_velocity_threshold: 20.0
+  fighting_sustained_frames: 8
+  crowd_density_threshold: 6
   crowd_region_radius_px: 200
   theft_posture_enabled: false
   theft_posture_duration_sec: 3.0

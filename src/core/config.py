@@ -49,15 +49,18 @@ class TrackingConfig(BaseModel):
 
 class BehaviourConfig(BaseModel):
     keypoint_window_size: int = 30
-    min_keypoint_frames: int = 10
-    loiter_time_threshold: float = 15.0
-    loiter_radius_px: int = 50
-    velocity_spike_factor: float = 3.0
-    sudden_run_min_history_sec: float = 3.0
-    proximity_threshold_px: int = 80
-    limb_velocity_threshold: float = 15.0
-    fighting_sustained_frames: int = 5
-    crowd_density_threshold: int = 5
+    min_keypoint_frames: int = 15
+    loiter_time_threshold: float = 30.0
+    loiter_radius_px: int = 40
+    loiter_min_displacement_px: float = 5.0
+    velocity_spike_factor: float = 4.0
+    velocity_min_baseline: float = 3.0
+    sudden_run_min_velocity: float = 8.0
+    sudden_run_min_history_sec: float = 5.0
+    proximity_threshold_px: int = 60
+    limb_velocity_threshold: float = 20.0
+    fighting_sustained_frames: int = 8
+    crowd_density_threshold: int = 6
     crowd_region_radius_px: int = 200
     theft_posture_enabled: bool = False
     theft_posture_duration_sec: float = 3.0
@@ -70,8 +73,7 @@ class AppConfig(BaseModel):
     behaviour: BehaviourConfig = BehaviourConfig()
     frame_queue_maxsize: int = 64
     log_level: str = "INFO"
-    pose_model_complexity: int = 1
-    pose_every_n_frames: int = 1
+    pose_every_n_frames: int = 3
 
 
 def load_config(path: Optional[Union[str, Path]] = None) -> AppConfig:

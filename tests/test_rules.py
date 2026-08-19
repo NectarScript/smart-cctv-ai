@@ -27,7 +27,9 @@ def _make_history(track_id, centroids, duration=0, camera_id="cam0"):
 
 
 def test_loitering_detected():
-    cfg = BehaviourConfig(loiter_time_threshold=5.0, loiter_radius_px=50)
+    cfg = BehaviourConfig(
+        loiter_time_threshold=5.0, loiter_radius_px=50, loiter_min_displacement_px=1.0,
+    )
     classifier = RuleBasedClassifier(cfg)
     centroids = [(100 + np.random.randint(-5, 5), 100 + np.random.randint(-5, 5)) for _ in range(200)]
     history = _make_history(1, centroids, duration=10.0)
@@ -37,7 +39,9 @@ def test_loitering_detected():
 
 
 def test_no_loitering_when_moving():
-    cfg = BehaviourConfig(loiter_time_threshold=5.0, loiter_radius_px=50)
+    cfg = BehaviourConfig(
+        loiter_time_threshold=5.0, loiter_radius_px=50, loiter_min_displacement_px=1.0,
+    )
     classifier = RuleBasedClassifier(cfg)
     centroids = [(i * 5, 100) for i in range(200)]
     history = _make_history(1, centroids, duration=10.0)
@@ -46,10 +50,13 @@ def test_no_loitering_when_moving():
 
 
 def test_sudden_running_detected():
-    cfg = BehaviourConfig(velocity_spike_factor=3.0, sudden_run_min_history_sec=1.0)
+    cfg = BehaviourConfig(
+        velocity_spike_factor=3.0, sudden_run_min_history_sec=1.0,
+        velocity_min_baseline=0.5, sudden_run_min_velocity=3.0,
+    )
     classifier = RuleBasedClassifier(cfg)
-    slow = [(100, 100 + i * 0.5) for i in range(60)]
-    fast = [(100, 130 + i * 10) for i in range(30)]
+    slow = [(100, 100 + i * 0.5) for i in range(80)]
+    fast = [(100, 140 + i * 10) for i in range(30)]
     centroids = slow + fast
     history = _make_history(1, centroids, duration=4.0)
     event = classifier.classify(1, history, None, [], time.time())
