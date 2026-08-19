@@ -105,8 +105,8 @@ class RuleBasedClassifier:
         if max_disp >= self._cfg.loiter_radius_px:
             return None
 
-        total_path = self._total_path_length(recent)
-        if total_path < self._cfg.loiter_min_displacement_px:
+        avg_vel = self._avg_velocity(recent)
+        if avg_vel < self._cfg.loiter_min_displacement_px:
             return None
 
         severity = BehaviourLabel.CRITICAL if duration > self._cfg.loiter_time_threshold * 2 else BehaviourLabel.SUSPICIOUS

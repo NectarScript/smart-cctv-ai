@@ -52,7 +52,7 @@ class BehaviourConfig(BaseModel):
     min_keypoint_frames: int = 15
     loiter_time_threshold: float = 30.0
     loiter_radius_px: int = 40
-    loiter_min_displacement_px: float = 5.0
+    loiter_min_displacement_px: float = 2.0
     velocity_spike_factor: float = 4.0
     velocity_min_baseline: float = 3.0
     sudden_run_min_velocity: float = 8.0

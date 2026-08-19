@@ -27,7 +27,7 @@ behaviour:
   min_keypoint_frames: 15
   loiter_time_threshold: 30.0
   loiter_radius_px: 40
-  loiter_min_displacement_px: 5.0
+  loiter_min_displacement_px: 2.0
   velocity_spike_factor: 4.0
   velocity_min_baseline: 3.0
   sudden_run_min_velocity: 8.0

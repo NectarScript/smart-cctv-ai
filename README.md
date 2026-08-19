@@ -70,7 +70,13 @@ pytest tests/ -v
 
 ## Usage
 
-### Single camera (webcam)
+### Web Dashboard (recommended)
+```bash
+python scripts/web_dashboard.py --source 0
+```
+Open http://localhost:8080 in your browser. Live video feed with detection overlay, event log, and performance metrics.
+
+### Single camera (OpenCV window)
 ```bash
 python scripts/demo_single.py --source 0
 ```
@@ -92,7 +98,7 @@ python scripts/demo_multi.py --sources 0 1 video.mp4
 python scripts/benchmark.py --input video.mp4 --frames 300
 ```
 
-Press `q` to quit any demo window.
+Press `q` to quit OpenCV demo windows.
 
 ### Tests
 ```bash
@@ -112,7 +118,8 @@ src/
 ├── detection/      # M2: PersonDetector, Tracker, TrackStore
 ├── behaviour/      # M3: PoseEstimator, KeypointBuffer, RuleBasedClassifier
 ├── pipeline/       # Orchestrator (M1→M2→M3)
-└── visualization/  # Renderer, Display
+├── visualization/  # Renderer, Display
+└── web/            # Flask web dashboard
 ```
 
 ## Planned (Phase 2+)

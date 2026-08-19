@@ -15,6 +15,9 @@ mediapipe>=0.10.14,<1.0
 torch>=2.1.0
 torchvision>=0.16.0
 
+# Web dashboard
+flask>=3.0
+
 # Configuration
 pyyaml>=6.0,<7.0
 pydantic>=2.0,<3.0
