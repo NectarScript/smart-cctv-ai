@@ -41,9 +41,7 @@ class Pipeline:
         self._detector = PersonDetector(config.detection)
         self._trackers: Dict[str, Tracker] = {}
         self._track_store = TrackStore()
-        self._pose_estimator = PoseEstimator(
-            model_complexity=config.pose_model_complexity,
-        )
+        self._pose_estimator = PoseEstimator()
         self._kp_buffer = KeypointBuffer(config.behaviour.keypoint_window_size)
         self._classifier = BehaviourClassifier(config.behaviour)
         self._renderer = Renderer()

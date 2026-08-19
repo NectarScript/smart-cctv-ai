@@ -48,7 +48,7 @@ def main():
     detector = PersonDetector(config.detection)
     tracker = Tracker(config.tracking)
     track_store = TrackStore()
-    pose_est = PoseEstimator(model_complexity=config.pose_model_complexity)
+    pose_est = PoseEstimator()
     kp_buffer = KeypointBuffer(config.behaviour.keypoint_window_size)
     classifier = BehaviourClassifier(config.behaviour)
 
