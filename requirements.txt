@@ -9,7 +9,7 @@ ultralytics>=8.3.0
 supervision>=0.25.0
 
 # Pose estimation (M3)
-mediapipe>=0.10.14
+mediapipe>=0.10.14,<1.0
 
 # ML framework
 torch>=2.1.0
