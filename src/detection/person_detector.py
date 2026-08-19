@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import numpy as np
 import supervision as sv
@@ -10,18 +11,32 @@ from src.core.config import DetectionConfig
 
 logger = logging.getLogger(__name__)
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+MODELS_DIR = PROJECT_ROOT / "models"
+
 
 class PersonDetector:
     """YOLOv8 person detection. Returns supervision.Detections filtered to person class."""
 
     def __init__(self, config: DetectionConfig):
         self._config = config
-        logger.info("Loading YOLO model: %s (device=%s)", config.model_name, config.device)
-        self._model = YOLO(config.model_name)
+        model_path = self._resolve_model_path(config.model_name)
+        logger.info("Loading YOLO model: %s (device=%s)", model_path, config.device)
+        self._model = YOLO(str(model_path))
         self._conf = config.confidence_threshold
         self._person_class = config.person_class_id
         self._device = config.device
         self._warmup_done = False
+
+    @staticmethod
+    def _resolve_model_path(model_name: str) -> Path:
+        path = Path(model_name)
+        if path.is_absolute() and path.exists():
+            return path
+        local = MODELS_DIR / path.name
+        if local.exists():
+            return local
+        return path
 
     def warmup(self) -> None:
         if self._warmup_done:
