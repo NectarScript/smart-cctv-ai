@@ -1,6 +1,6 @@
 log_level: INFO
 frame_queue_maxsize: 64
-pose_every_n_frames: 3
+pose_every_n_frames: 5
 
 cameras:
   - source_id: default
@@ -14,7 +14,7 @@ detection:
   confidence_threshold: 0.45
   person_class_id: 0
   device: cpu
-  input_size: 640
+  input_size: 320
 
 tracking:
   track_activation_threshold: 0.25
@@ -28,9 +28,9 @@ behaviour:
   loiter_time_threshold: 30.0
   loiter_radius_px: 40
   loiter_min_displacement_px: 2.0
-  velocity_spike_factor: 4.0
+  velocity_spike_factor: 5.0
   velocity_min_baseline: 3.0
-  sudden_run_min_velocity: 8.0
+  sudden_run_min_velocity: 12.0
   sudden_run_min_history_sec: 5.0
   proximity_threshold_px: 60
   limb_velocity_threshold: 20.0

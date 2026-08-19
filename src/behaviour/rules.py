@@ -148,8 +148,8 @@ class RuleBasedClassifier:
         recent = pts[-recent_window:]
         baseline = pts[-(recent_window + baseline_window):-recent_window]
 
-        recent_vel = self._avg_velocity(recent)
-        baseline_vel = self._avg_velocity(baseline)
+        recent_vel = self._smoothed_velocity(recent)
+        baseline_vel = self._smoothed_velocity(baseline)
 
         if recent_vel < self._cfg.sudden_run_min_velocity:
             return None
@@ -338,6 +338,18 @@ class RuleBasedClassifier:
             dy = points[i][1] - points[i - 1][1]
             dists.append(np.sqrt(dx * dx + dy * dy))
         return float(np.mean(dists))
+
+    @staticmethod
+    def _smoothed_velocity(points: list, chunk_size: int = 5) -> float:
+        """Velocity using chunk displacement — resistant to bbox jitter."""
+        if len(points) < chunk_size + 1:
+            return 0.0
+        dists = []
+        for i in range(chunk_size, len(points), chunk_size):
+            dx = points[i][0] - points[i - chunk_size][0]
+            dy = points[i][1] - points[i - chunk_size][1]
+            dists.append(np.sqrt(dx * dx + dy * dy) / chunk_size)
+        return float(np.mean(dists)) if dists else 0.0
 
     @staticmethod
     def _total_path_length(points: list) -> float:

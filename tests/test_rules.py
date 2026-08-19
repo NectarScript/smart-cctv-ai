@@ -56,7 +56,7 @@ def test_sudden_running_detected():
     )
     classifier = RuleBasedClassifier(cfg)
     slow = [(100, 100 + i * 0.5) for i in range(80)]
-    fast = [(100, 140 + i * 10) for i in range(30)]
+    fast = [(100, 140 + i * 20) for i in range(30)]
     centroids = slow + fast
     history = _make_history(1, centroids, duration=4.0)
     event = classifier.classify(1, history, None, [], time.time())

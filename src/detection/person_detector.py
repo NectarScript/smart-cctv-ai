@@ -41,8 +41,10 @@ class PersonDetector:
     def warmup(self) -> None:
         if self._warmup_done:
             return
-        dummy = np.zeros((640, 640, 3), dtype=np.uint8)
-        self._model(dummy, conf=self._conf, device=self._device, verbose=False)
+        sz = self._config.input_size
+        dummy = np.zeros((sz, sz, 3), dtype=np.uint8)
+        self._model(dummy, conf=self._conf, device=self._device,
+                    imgsz=sz, verbose=False)
         self._warmup_done = True
         logger.info("Detector warmup complete")
 
@@ -51,6 +53,7 @@ class PersonDetector:
             frame,
             conf=self._conf,
             device=self._device,
+            imgsz=self._config.input_size,
             verbose=False,
         )[0]
         detections = sv.Detections.from_ultralytics(results)
