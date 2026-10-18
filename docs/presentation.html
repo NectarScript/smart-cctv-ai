@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart CCTV AI — Module 1 Progress</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #f8fafc;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --heading: #0f172a;
+  --muted: #64748b;
+  --primary: #1e5faf;
+  --accent: #0ea5e9;
+  --soft: #dbeafe;
+  --green: #10b981;
+  --green-soft: #d1fae5;
+  --amber: #f59e0b;
+  --amber-soft: #fef3c7;
+  --red: #ef4444;
+  --red-soft: #fee2e2;
+  --purple: #8b5cf6;
+  --purple-soft: #ede9fe;
+  --teal: #14b8a6;
+  --teal-soft: #ccfbf1;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #111827;
+  font-family: 'Inter', 'Segoe UI', 'Aptos', Calibri, Arial, sans-serif;
+  overflow: hidden;
+  color: var(--text);
+}
+
+.stage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slide {
+  width: 1280px;
+  height: 720px;
+  background: var(--bg);
+  position: relative;
+  display: none;
+  padding: 40px 50px 40px 50px;
+  transform-origin: center center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.slide.active { display: block; }
+
+/* ============ HEADER ============ */
+.slide-header {
+  margin-bottom: 20px;
+}
+.section-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.slide-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--heading);
+  line-height: 1.15;
+}
+.title-underline {
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  margin-top: 12px;
+}
+
+/* ============ FOOTER ============ */
+.slide-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+  right: 50px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ============ TITLE SLIDE ============ */
+.title-slide {
+  padding: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.title-slide.active { display: flex; }
+.title-slide .top-bar,
+.title-slide .bot-bar {
+  position: absolute;
+  left: 0; right: 0;
+  height: 12px;
+  background: var(--primary);
+}
+.title-slide .top-bar { top: 0; }
+.title-slide .bot-bar { bottom: 0; }
+
+.title-college {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--heading);
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  padding: 0 60px;
+  margin-bottom: 12px;
+}
+.title-dept {
+  font-size: 22px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.title-session {
+  font-size: 16px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-bottom: 44px;
+}
+.title-divider {
+  width: 140px;
+  height: 3px;
+  background: var(--primary);
+  margin: 0 auto 32px;
+}
+.title-project-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.title-project {
+  font-size: 46px;
+  font-weight: 800;
+  color: var(--heading);
+  line-height: 1.15;
+  padding: 0 100px;
+  margin-bottom: 12px;
+}
+.title-sub {
+  font-size: 22px;
+  color: var(--text);
+  font-weight: 400;
+  padding: 0 100px;
+  margin-bottom: 48px;
+}
+.title-people {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-top: 20px;
+  width: 900px;
+}
+.people-block .label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.people-block .name {
+  font-size: 18px;
+  color: var(--heading);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* ============ REUSABLE ============ */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  height: calc(100% - 140px);
+}
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.four-col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+.card-white {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.card h3 {
+  font-size: 22px;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.h-block {
+  font-size: 24px;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.para {
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.para + .para { margin-top: 14px; }
+
+/* ============ SLIDE 1 INTRO ============ */
+.approach-list { display: flex; flex-direction: column; gap: 18px; }
+.approach-item { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
+.approach-num {
+  width: 44px; height: 44px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 18px;
+}
+.approach-item h4 { font-size: 20px; color: var(--heading); font-weight: 700; }
+.approach-item p { font-size: 15px; color: var(--muted); margin-top: 2px; }
+
+/* ============ LITERATURE ============ */
+.lit-col { display: flex; flex-direction: column; }
+.lit-header {
+  color: white;
+  font-weight: 700;
+  font-size: 22px;
+  padding: 16px;
+  border-radius: 8px 8px 0 0;
+  text-align: center;
+}
+.lit-body {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+  flex: 1;
+}
+.lit-body .item + .item { margin-top: 20px; }
+.lit-body h4 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.lit-body p { font-size: 14px; color: var(--text); line-height: 1.4; }
+
+/* ============ AIM & OBJECTIVES ============ */
+.aim-box {
+  background: var(--soft);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
+}
+.aim-box .lbl {
+  font-size: 14px; font-weight: 700; color: var(--primary);
+  letter-spacing: 3px;
+}
+.aim-box .txt { font-size: 21px; color: var(--heading); margin-top: 8px; line-height: 1.4; }
+
+.obj-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.obj-num { font-size: 30px; font-weight: 800; color: var(--primary); }
+.obj-bar { width: 32px; height: 3px; background: var(--primary); margin: 6px 0 10px; }
+.obj-title { font-size: 22px; font-weight: 700; color: var(--heading); margin-bottom: 8px; }
+.obj-desc { font-size: 15px; color: var(--text); line-height: 1.4; }
+
+/* ============ METHODOLOGY PIPELINE ============ */
+.pipeline-h {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 30px 0;
+}
+.pipe-stage {
+  display: flex; flex-direction: column; align-items: center;
+  flex: 1;
+  max-width: 170px;
+}
+.pipe-circle {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800;
+  color: white;
+  position: relative;
+}
+.pipe-circle::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: white;
+}
+.pipe-circle span {
+  position: relative;
+  z-index: 1;
+}
+.pipe-name { font-size: 18px; font-weight: 700; margin-top: 14px; color: var(--heading); text-align: center; }
+.pipe-desc { font-size: 13px; color: var(--muted); margin-top: 4px; text-align: center; }
+.pipe-arrow {
+  width: 30px; height: 3px;
+  background: var(--border);
+  margin-top: -50px;
+}
+
+.principles {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px 30px;
+  margin-top: 30px;
+}
+.principle { font-size: 17px; }
+.principle strong { color: var(--heading); }
+.principle span { color: var(--text); }
+
+/* ============ MODULE DISTRIBUTION ============ */
+.mod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.mod-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  position: relative;
+}
+.mod-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.mod-id {
+  background: var(--soft);
+  color: var(--primary);
+  font-size: 24px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+.mod-status {
+  font-size: 12px; font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.status-done { background: var(--green-soft); color: var(--green); }
+.status-plan { background: var(--amber-soft); color: var(--amber); }
+.mod-name { font-size: 22px; font-weight: 700; color: var(--heading); margin-bottom: 8px; }
+.mod-phase { font-size: 14px; color: var(--muted); }
+
+/* ============ M1 STATS ============ */
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.stat-big {
+  font-size: 60px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  min-width: 80px;
+  text-align: center;
+}
+.stat-info h4 { font-size: 18px; color: var(--heading); font-weight: 700; }
+.stat-info p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* ============ M1 ARCHITECTURE ============ */
+.arch-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 30px 0;
+}
+.arch-box {
+  border-radius: 10px;
+  padding: 20px 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  min-width: 130px;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+}
+.arch-arrow {
+  color: var(--muted);
+  font-size: 24px;
+}
+.arch-flow-label {
+  text-align: center;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 17px;
+  margin-top: 4px;
+}
+
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  margin-top: 24px;
+}
+.comp-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.comp-row strong { color: var(--primary); font-size: 16px; }
+.comp-row span { color: var(--text); font-size: 15px; }
+
+/* ============ IMPLEMENTATION ============ */
+.impl-row {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.impl-row strong { color: var(--primary); font-size: 17px; }
+.impl-row span { color: var(--text); font-size: 15px; }
+
+.tech-pill {
+  background: var(--soft);
+  color: var(--primary);
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+/* ============ DEMO PLACEHOLDERS ============ */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: calc(100% - 160px);
+}
+.demo-slot {
+  background: var(--panel);
+  border: 2px dashed var(--primary);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+.demo-slot h4 {
+  font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 8px;
+}
+.demo-slot p { font-size: 14px; color: var(--muted); }
+
+/* ============ LIMITATIONS ============ */
+.limits-col, .next-col {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.lim-header {
+  padding: 14px 20px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.lim-header.red { background: var(--red-soft); color: var(--red); }
+.lim-header.green { background: var(--green-soft); color: var(--green); }
+.lim-body { padding: 20px; }
+.lim-item {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.lim-item:last-child { border-bottom: none; }
+.lim-item .mark {
+  font-weight: 800;
+  font-size: 18px;
+}
+.lim-item.r .mark { color: var(--red); }
+.lim-item.g .mark { color: var(--green); }
+.lim-item p { font-size: 16px; color: var(--text); line-height: 1.4; }
+
+/* ============ M2 CONTEXT ============ */
+.flow-nodes {
+  display: flex;
+  gap: 8px;
+  margin-top: 22px;
+  align-items: center;
+}
+.flow-node {
+  background: var(--bg);
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  flex: 1;
+}
+.flow-node .lbl {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+.flow-node .desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.flow-arrow { font-size: 26px; color: var(--muted); }
+
+.m2-tech {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.m2-tech-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.m2-tech-item:last-child { border-bottom: none; }
+.m2-tech-item h4 { font-size: 17px; color: var(--heading); font-weight: 700; }
+.m2-tech-item p { font-size: 14px; color: var(--muted); margin-top: 3px; }
+
+.note-box {
+  background: var(--amber-soft);
+  border: 1px solid var(--amber);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 24px;
+}
+.note-box .lbl {
+  font-size: 13px; font-weight: 700; color: var(--amber);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.note-box p { font-size: 15px; color: var(--text); margin-top: 6px; }
+
+/* ============ SOFTWARE REQ ============ */
+.env-table { border-collapse: collapse; width: 100%; }
+.env-table td {
+  padding: 12px 8px;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.env-table td:first-child {
+  color: var(--heading);
+  font-weight: 700;
+  width: 45%;
+}
+.env-table td:last-child { color: var(--text); }
+.env-table tr:last-child td { border-bottom: none; }
+
+.dep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dep-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.dep-card .name { font-size: 15px; font-weight: 700; color: var(--heading); }
+.dep-card .ver { font-size: 13px; color: var(--muted); }
+.dep-tag {
+  font-size: 11px; font-weight: 700; color: white;
+  padding: 4px 10px; border-radius: 12px;
+}
+.tag-m1 { background: var(--teal); }
+.tag-m2 { background: var(--primary); }
+.tag-m3 { background: var(--purple); }
+.tag-ml { background: var(--amber); }
+.tag-core { background: var(--muted); }
+.tag-cfg { background: var(--green); }
+.tag-web { background: var(--accent); }
+
+/* ============ FUTURE WORK ============ */
+.tl-container { padding: 0 20px; }
+.tl-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  margin: 40px 0 20px;
+}
+.tl-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.tl-pill {
+  color: white;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+.tl-connector {
+  width: 2px;
+  height: 20px;
+  background: var(--border);
+}
+.tl-node {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 4px solid white;
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+}
+.tl-line::after {
+  content: '';
+  position: absolute;
+  left: 60px; right: 60px;
+  top: 74px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+.tl-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+.tl-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.tl-card h4 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.tl-card .sub { font-size: 16px; font-weight: 700; color: var(--heading); margin-bottom: 8px; }
+.tl-card p { font-size: 14px; color: var(--text); line-height: 1.4; }
+
+/* ============ REFERENCES ============ */
+.refs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 30px;
+}
+.ref-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  align-items: start;
+  padding: 4px 0;
+}
+.ref-num {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 16px;
+}
+.ref-item p { font-size: 14px; color: var(--text); line-height: 1.45; }
+
+/* ============ NAV UI ============ */
+.nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15,23,42,0.85);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.nav:hover { opacity: 1; }
+.nav button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+.nav button:hover { background: rgba(255,255,255,0.15); }
+.nav .counter { min-width: 60px; text-align: center; }
+
+.hint {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(15,23,42,0.85);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 100;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.hint:hover { opacity: 1; }
+
+@media print {
+  html, body { background: white; overflow: visible; height: auto; }
+  .stage { display: block; }
+  .slide { display: block !important; page-break-after: always; box-shadow: none; margin: 0 auto; transform: none !important; }
+  .nav, .hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+<!-- ========== TITLE SLIDE ========== -->
+<section class="slide title-slide active" data-slide="1">
+  <div class="top-bar"></div>
+  <div class="title-college">Priyadarshini Bhagwati College of Engineering</div>
+  <div class="title-dept">Department of Information Technology</div>
+  <div class="title-session">SESSION 2026 – 2027</div>
+  <div class="title-divider"></div>
+
+  <div class="title-project-label">Project Seminar Presentation</div>
+  <div class="title-project">Smart CCTV AI</div>
+  <div class="title-sub">Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection</div>
+
+  <div class="title-people">
+    <div class="people-block">
+      <div class="label">Project Mentor</div>
+      <div class="name">Anant Jain</div>
+      <div class="label" style="margin-top:18px">Project Guide</div>
+      <div class="name">Dr. Manoj Chaudhari</div>
+    </div>
+    <div class="people-block">
+      <div class="label">Group Members</div>
+      <div class="name">
+        Uday Vairalkar<br>
+        Piyush Chiwande<br>
+        Krishna Surve<br>
+        Anuj Hiwarkar<br>
+        Yash Bahoriya
+      </div>
+    </div>
+  </div>
+  <div class="bot-bar"></div>
+</section>
+
+<!-- ========== 01 INTRODUCTION ========== -->
+<section class="slide" data-slide="2">
+  <div class="slide-header">
+    <div class="section-label">01 — Introduction</div>
+    <div class="slide-title">Introduction</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="h-block">Problem</div>
+      <p class="para">Traditional CCTV systems only record video. Detecting suspicious activity depends on human operators watching many feeds at once.</p>
+      <p class="para">Human attention degrades sharply after 20 minutes of continuous monitoring. Critical events are missed, and intelligent commercial solutions remain proprietary and expensive.</p>
+    </div>
+    <div class="card">
+      <h3>Our Approach</h3>
+      <div class="approach-list">
+        <div class="approach-item">
+          <div class="approach-num">1</div>
+          <div>
+            <h4>Multi-Camera Ingestion</h4>
+            <p>Live capture from webcams, IP cameras, and video files</p>
+          </div>
+        </div>
+        <div class="approach-item">
+          <div class="approach-num">2</div>
+          <div>
+            <h4>Person Detection</h4>
+            <p>YOLOv8 + ByteTrack for identity tracking</p>
+          </div>
+        </div>
+        <div class="approach-item">
+          <div class="approach-num">3</div>
+          <div>
+            <h4>Behaviour Analysis</h4>
+            <p>Pose-based rules for suspicious actions</p>
+          </div>
+        </div>
+        <div class="approach-item">
+          <div class="approach-num">4</div>
+          <div>
+            <h4>Web Dashboard</h4>
+            <p>Real-time streaming with alerts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 02 LITERATURE SURVEY ========== -->
+<section class="slide" data-slide="3">
+  <div class="slide-header">
+    <div class="section-label">02 — Literature Survey</div>
+    <div class="slide-title">Literature Survey</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="three-col" style="height: calc(100% - 160px)">
+    <div class="lit-col">
+      <div class="lit-header" style="background: var(--teal)">Video Ingestion</div>
+      <div class="lit-body">
+        <div class="item">
+          <h4 style="color: var(--teal)">OpenCV VideoCapture</h4>
+          <p>Bradski (2000). Standard camera interfacing API.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--teal)">RTSP Protocol</h4>
+          <p>RFC 7826. Dominant IP camera streaming standard.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--teal)">Drop-oldest Buffering</h4>
+          <p>Chen et al. (2019). Real-time surveillance practice.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lit-col">
+      <div class="lit-header" style="background: var(--primary)">Detection &amp; Tracking</div>
+      <div class="lit-body">
+        <div class="item">
+          <h4 style="color: var(--primary)">YOLOv8</h4>
+          <p>Jocher et al. (2023). Modern one-stage object detector.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--primary)">ByteTrack</h4>
+          <p>Zhang et al. (ECCV 2022). Reduces ID switches vs SORT.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--primary)">DeepSORT</h4>
+          <p>Wojke et al. (2017). Appearance-based tracking.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lit-col">
+      <div class="lit-header" style="background: var(--purple)">Behaviour Analysis</div>
+      <div class="lit-body">
+        <div class="item">
+          <h4 style="color: var(--purple)">MediaPipe Pose</h4>
+          <p>Bazarevsky et al. (2020). 33-keypoint BlazePose.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--purple)">ST-GCN</h4>
+          <p>Yan et al. (AAAI 2018). Graph CNN on skeletons.</p>
+        </div>
+        <div class="item">
+          <h4 style="color: var(--purple)">Rule-based Systems</h4>
+          <p>Deployed in BriefCam, Avigilon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 03 AIM & OBJECTIVE ========== -->
+<section class="slide" data-slide="4">
+  <div class="slide-header">
+    <div class="section-label">03 — Aim and Objective</div>
+    <div class="slide-title">Aim and Objective</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="aim-box">
+    <div class="lbl">AIM</div>
+    <div class="txt">To design and implement an intelligent multi-camera surveillance pipeline that detects and classifies suspicious human behaviour in real time using open-source AI components.</div>
+  </div>
+
+  <div style="font-size:15px; font-weight:700; color:var(--primary); letter-spacing:3px; text-transform:uppercase; margin-bottom:12px">OBJECTIVES</div>
+
+  <div class="four-col">
+    <div class="obj-card">
+      <div class="obj-num">01</div>
+      <div class="obj-bar"></div>
+      <div class="obj-title">Ingestion</div>
+      <div class="obj-desc">Build a threaded multi-camera capture layer supporting webcam, RTSP, and video files.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-num">02</div>
+      <div class="obj-bar"></div>
+      <div class="obj-title">Detection</div>
+      <div class="obj-desc">Integrate YOLOv8 person detection with ByteTrack for persistent identity tracking.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-num">03</div>
+      <div class="obj-bar"></div>
+      <div class="obj-title">Behaviour</div>
+      <div class="obj-desc">Implement rule-based classifier over centroid history and pose keypoints.</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-num">04</div>
+      <div class="obj-bar"></div>
+      <div class="obj-title">Interface</div>
+      <div class="obj-desc">Deliver a web dashboard with live streaming and event log.</div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 04 PROPOSED METHODOLOGY ========== -->
+<section class="slide" data-slide="5">
+  <div class="slide-header">
+    <div class="section-label">04 — Proposed Methodology</div>
+    <div class="slide-title">Proposed Methodology</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="h-block" style="margin-top: 10px">End-to-End Pipeline</div>
+
+  <div class="pipeline-h">
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--teal)"><span style="color: var(--teal)">01</span></div>
+      <div class="pipe-name">Sources</div>
+      <div class="pipe-desc">Webcam / RTSP / File</div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--primary)"><span style="color: var(--primary)">02</span></div>
+      <div class="pipe-name">Ingestion</div>
+      <div class="pipe-desc">Threaded capture</div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--accent)"><span style="color: var(--accent)">03</span></div>
+      <div class="pipe-name">Detection</div>
+      <div class="pipe-desc">YOLOv8n person</div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--purple)"><span style="color: var(--purple)">04</span></div>
+      <div class="pipe-name">Tracking</div>
+      <div class="pipe-desc">ByteTrack IDs</div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--amber)"><span style="color: var(--amber)">05</span></div>
+      <div class="pipe-name">Behaviour</div>
+      <div class="pipe-desc">Rules + pose</div>
+    </div>
+    <div class="pipe-arrow"></div>
+    <div class="pipe-stage">
+      <div class="pipe-circle" style="background: var(--green)"><span style="color: var(--green)">06</span></div>
+      <div class="pipe-name">Output</div>
+      <div class="pipe-desc">Web dashboard</div>
+    </div>
+  </div>
+
+  <div class="h-block" style="margin-top: 40px">Design Principles</div>
+  <div class="principles">
+    <div class="principle"><strong>Modular</strong> &mdash; <span>Each module is independently testable and swappable</span></div>
+    <div class="principle"><strong>Real-time first</strong> &mdash; <span>Drop-oldest buffering favours recency</span></div>
+    <div class="principle"><strong>CPU baseline</strong> &mdash; <span>Runs on commodity hardware; GPU optional</span></div>
+    <div class="principle"><strong>Configurable</strong> &mdash; <span>All thresholds exposed in YAML</span></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 05 MODULE DISTRIBUTION ========== -->
+<section class="slide" data-slide="6">
+  <div class="slide-header">
+    <div class="section-label">05 — Module Distribution</div>
+    <div class="slide-title">Module Distribution</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="mod-grid" style="margin-top: 20px">
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M1</div>
+        <div class="mod-status status-done">Implemented</div>
+      </div>
+      <div class="mod-name">Multi-Camera Ingestion</div>
+      <div class="mod-phase">Phase 1</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M2</div>
+        <div class="mod-status status-done">Implemented</div>
+      </div>
+      <div class="mod-name">Detection &amp; Tracking</div>
+      <div class="mod-phase">Phase 1</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M3</div>
+        <div class="mod-status status-done">Implemented</div>
+      </div>
+      <div class="mod-name">Behaviour Classification</div>
+      <div class="mod-phase">Phase 1</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M4</div>
+        <div class="mod-status status-plan">Planned</div>
+      </div>
+      <div class="mod-name">Face Recognition</div>
+      <div class="mod-phase">Phase 2</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M5</div>
+        <div class="mod-status status-plan">Planned</div>
+      </div>
+      <div class="mod-name">Backend + Cloud</div>
+      <div class="mod-phase">Phase 2</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-top">
+        <div class="mod-id">M6</div>
+        <div class="mod-status status-plan">Planned</div>
+      </div>
+      <div class="mod-name">Dashboard + Analytics</div>
+      <div class="mod-phase">Phase 2</div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 06 MODULE 1 INTRO ========== -->
+<section class="slide" data-slide="7">
+  <div class="slide-header">
+    <div class="section-label">06 — Module 1</div>
+    <div class="slide-title">Module 1: Multi-Camera Ingestion &amp; AI Vision</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="h-block">Purpose</div>
+      <p class="para">Acquire raw video from heterogeneous sources — laptop webcams, IP cameras over RTSP, and pre-recorded video files — and deliver clean, timestamped frames to the downstream AI pipeline without blocking.</p>
+
+      <div class="h-block" style="margin-top: 30px">Responsibilities</div>
+      <ul style="list-style:none; padding: 0;">
+        <li style="padding:6px 0; font-size:18px; color:var(--text);">&bull; Manage lifecycle of N camera streams</li>
+        <li style="padding:6px 0; font-size:18px; color:var(--text);">&bull; Threaded capture to avoid blocking the AI loop</li>
+        <li style="padding:6px 0; font-size:18px; color:var(--text);">&bull; Bounded queue with drop-oldest policy</li>
+        <li style="padding:6px 0; font-size:18px; color:var(--text);">&bull; Frame preprocessing (crop, colour, resize)</li>
+      </ul>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div class="stat-card">
+        <div class="stat-big">3</div>
+        <div class="stat-info">
+          <h4>Source Types</h4>
+          <p>Webcam &middot; RTSP &middot; File</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">N</div>
+        <div class="stat-info">
+          <h4>Cameras in Parallel</h4>
+          <p>Thread-per-camera</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">1</div>
+        <div class="stat-info">
+          <h4>Buffer Depth</h4>
+          <p>Drop-oldest policy</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 07 M1 ARCHITECTURE ========== -->
+<section class="slide" data-slide="8">
+  <div class="slide-header">
+    <div class="section-label">07 — M1 Architecture</div>
+    <div class="slide-title">M1 Pipeline Architecture</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="arch-flow-label">Data Flow: Camera → Capture → Process → Buffer → AI → Output</div>
+
+  <div class="arch-flow">
+    <div class="arch-box" style="background: var(--teal)">Camera<br>Sources</div>
+    <div class="arch-arrow">▶</div>
+    <div class="arch-box" style="background: var(--primary)">Frame<br>Capture</div>
+    <div class="arch-arrow">▶</div>
+    <div class="arch-box" style="background: var(--accent)">Pre-<br>processing</div>
+    <div class="arch-arrow">▶</div>
+    <div class="arch-box" style="background: var(--purple)">Frame<br>Buffer</div>
+    <div class="arch-arrow">▶</div>
+    <div class="arch-box" style="background: var(--amber)">AI Vision<br>Pipeline</div>
+    <div class="arch-arrow">▶</div>
+    <div class="arch-box" style="background: var(--green)">Processed<br>Output</div>
+  </div>
+
+  <div class="h-block" style="margin-top: 40px">Component Details</div>
+  <div class="comp-grid">
+    <div class="comp-row"><strong>Camera Sources</strong><span>Webcam index &middot; RTSP URL &middot; Video file path</span></div>
+    <div class="comp-row"><strong>Frame Capture</strong><span>cv2.VideoCapture in daemon thread</span></div>
+    <div class="comp-row"><strong>Preprocessing</strong><span>Crop with padding &middot; BGR→RGB &middot; Letterbox</span></div>
+    <div class="comp-row"><strong>Frame Buffer</strong><span>queue.Queue with drop-oldest on full</span></div>
+    <div class="comp-row"><strong>AI Vision</strong><span>Handoff to Module 2: Detection + Tracking</span></div>
+    <div class="comp-row"><strong>Output</strong><span>Annotated frames + behaviour events</span></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 08 M1 IMPLEMENTATION ========== -->
+<section class="slide" data-slide="9">
+  <div class="slide-header">
+    <div class="section-label">08 — Implementation</div>
+    <div class="slide-title">M1 Implementation</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="h-block">Implemented Components</div>
+      <div class="impl-row"><strong>CameraSource</strong><span>Thread-per-camera capture wrapping cv2.VideoCapture</span></div>
+      <div class="impl-row"><strong>CameraManager</strong><span>Manages N sources, round-robin frame retrieval</span></div>
+      <div class="impl-row"><strong>Preprocessor</strong><span>crop_bbox, preprocess_for_pose, letterbox</span></div>
+      <div class="impl-row"><strong>FramePacket</strong><span>camera_id, frame, timestamp, frame_number</span></div>
+      <div class="impl-row"><strong>AppConfig</strong><span>Pydantic config with YAML loader</span></div>
+    </div>
+    <div>
+      <div class="h-block">Technology Stack</div>
+      <div class="tech-pill">Python 3.11</div>
+      <div class="tech-pill">OpenCV 4.8+</div>
+      <div class="tech-pill">FFmpeg</div>
+      <div class="tech-pill">Pydantic 2.x</div>
+      <div class="tech-pill">PyYAML</div>
+      <div class="tech-pill">threading</div>
+      <div class="tech-pill">queue.Queue</div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 09 M1 DEMO ========== -->
+<section class="slide" data-slide="10">
+  <div class="slide-header">
+    <div class="section-label">09 — Working Demo</div>
+    <div class="slide-title">M1 Working Demo</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <p style="font-size:16px; font-style:italic; color:var(--muted); margin-bottom:14px">Screenshots from actual pipeline runs — insert real captures below.</p>
+
+  <div class="demo-grid">
+    <div class="demo-slot">
+      <h4>Insert M1 Demo Screenshot</h4>
+      <p>Live webcam feed in web dashboard</p>
+    </div>
+    <div class="demo-slot">
+      <h4>Insert Multi-Camera Test</h4>
+      <p>Two or more sources processed in parallel</p>
+    </div>
+    <div class="demo-slot">
+      <h4>Insert Camera / Video Input</h4>
+      <p>Source configuration and connection</p>
+    </div>
+    <div class="demo-slot">
+      <h4>Insert FPS / Performance Result</h4>
+      <p>Benchmark output with measured FPS</p>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 10 M1 LIMITATIONS ========== -->
+<section class="slide" data-slide="11">
+  <div class="slide-header">
+    <div class="section-label">10 — Limitations &amp; Next Steps</div>
+    <div class="slide-title">Current Limitations &amp; Next Steps</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="limits-col">
+      <div class="lim-header red">Current Limitations</div>
+      <div class="lim-body">
+        <div class="lim-item r"><div class="mark">—</div><p>No frame synchronisation across cameras</p></div>
+        <div class="lim-item r"><div class="mark">—</div><p>No auto-reconnect for RTSP on connection loss</p></div>
+        <div class="lim-item r"><div class="mark">—</div><p>CPU-only decoding (no hardware acceleration)</p></div>
+        <div class="lim-item r"><div class="mark">—</div><p>Frame-drop rate not exposed as a metric</p></div>
+        <div class="lim-item r"><div class="mark">—</div><p>No cross-camera identity association</p></div>
+      </div>
+    </div>
+    <div class="next-col">
+      <div class="lim-header green">Planned Next Steps</div>
+      <div class="lim-body">
+        <div class="lim-item g"><div class="mark">▸</div><p>RTSP auto-reconnect with exponential backoff</p></div>
+        <div class="lim-item g"><div class="mark">▸</div><p>Expose frame-drop rate on web dashboard</p></div>
+        <div class="lim-item g"><div class="mark">▸</div><p>Optional GPU-accelerated decoding (NVDEC)</p></div>
+        <div class="lim-item g"><div class="mark">▸</div><p>Frame-timestamp synchronisation across cameras</p></div>
+        <div class="lim-item g"><div class="mark">▸</div><p>Adaptive frame-rate based on pipeline load</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 11 MODULE 2 CONTEXT ========== -->
+<section class="slide" data-slide="12">
+  <div class="slide-header">
+    <div class="section-label">11 — Module 2</div>
+    <div class="slide-title">Module 2: Detection &amp; Tracking (Context)</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <p class="para" style="margin-bottom:24px">The next stage of the pipeline. M2 consumes frames from M1 and returns tracked person detections with persistent identity IDs.</p>
+
+  <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px;">
+    <div>
+      <div class="h-block">Data Flow</div>
+      <div class="flow-nodes">
+        <div class="flow-node" style="border-color: var(--teal)">
+          <div class="lbl" style="color: var(--teal)">M1</div>
+          <div class="desc">FramePacket</div>
+        </div>
+        <div class="flow-arrow">▶</div>
+        <div class="flow-node" style="border-color: var(--primary)">
+          <div class="lbl" style="color: var(--primary)">M2</div>
+          <div class="desc">Detections + Track IDs</div>
+        </div>
+        <div class="flow-arrow">▶</div>
+        <div class="flow-node" style="border-color: var(--purple)">
+          <div class="lbl" style="color: var(--purple)">M3</div>
+          <div class="desc">BehaviourEvent</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <div class="lbl">Note</div>
+        <p>Module 2 is implemented and functional. Detailed methodology, evaluation, and results are covered in a separate module-specific presentation.</p>
+      </div>
+    </div>
+
+    <div class="m2-tech">
+      <div style="font-size:20px; font-weight:700; color:var(--primary); margin-bottom:10px">Chosen Technologies</div>
+      <div class="m2-tech-item">
+        <h4>YOLOv8n</h4>
+        <p>3.2M params, person class filter</p>
+      </div>
+      <div class="m2-tech-item">
+        <h4>ByteTrack</h4>
+        <p>Byte-level association algorithm</p>
+      </div>
+      <div class="m2-tech-item">
+        <h4>supervision</h4>
+        <p>Standard sv.Detections API</p>
+      </div>
+      <div class="m2-tech-item">
+        <h4>TrackStore</h4>
+        <p>Per-track spatial history</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 12 SOFTWARE REQUIREMENTS ========== -->
+<section class="slide" data-slide="13">
+  <div class="slide-header">
+    <div class="section-label">12 — Software Requirements</div>
+    <div class="slide-title">Software Requirements</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="h-block">Runtime Environment</div>
+      <table class="env-table">
+        <tr><td>Operating System</td><td>Windows / Linux / macOS</td></tr>
+        <tr><td>Python Version</td><td>3.10 – 3.12  (3.11 recommended)</td></tr>
+        <tr><td>Environment</td><td>Conda  or  venv</td></tr>
+        <tr><td>Hardware</td><td>CPU baseline &middot; GPU optional</td></tr>
+        <tr><td>Memory</td><td>≥ 4 GB RAM (single camera)</td></tr>
+        <tr><td>Storage</td><td>~2 GB for models + dependencies</td></tr>
+      </table>
+    </div>
+
+    <div>
+      <div class="h-block">Core Dependencies</div>
+      <div class="dep-grid">
+        <div class="dep-card"><div><div class="name">opencv-python</div><div class="ver">&gt;=4.8</div></div><div class="dep-tag tag-m1">M1</div></div>
+        <div class="dep-card"><div><div class="name">numpy</div><div class="ver">&gt;=1.24</div></div><div class="dep-tag tag-core">core</div></div>
+        <div class="dep-card"><div><div class="name">ultralytics</div><div class="ver">&gt;=8.3</div></div><div class="dep-tag tag-m2">M2</div></div>
+        <div class="dep-card"><div><div class="name">supervision</div><div class="ver">&gt;=0.25</div></div><div class="dep-tag tag-m2">M2</div></div>
+        <div class="dep-card"><div><div class="name">mediapipe</div><div class="ver">&gt;=0.10</div></div><div class="dep-tag tag-m3">M3</div></div>
+        <div class="dep-card"><div><div class="name">torch</div><div class="ver">&gt;=2.1</div></div><div class="dep-tag tag-ml">ML</div></div>
+        <div class="dep-card"><div><div class="name">pydantic</div><div class="ver">&gt;=2.0</div></div><div class="dep-tag tag-cfg">cfg</div></div>
+        <div class="dep-card"><div><div class="name">flask</div><div class="ver">&gt;=3.0</div></div><div class="dep-tag tag-web">web</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 13 FUTURE WORK ========== -->
+<section class="slide" data-slide="14">
+  <div class="slide-header">
+    <div class="section-label">13 — Future Work</div>
+    <div class="slide-title">Future Work</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="tl-container">
+    <div class="tl-line">
+      <div class="tl-item">
+        <div class="tl-pill" style="background: var(--green)">Now</div>
+        <div class="tl-connector"></div>
+        <div class="tl-node" style="background: var(--green)">1</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-pill" style="background: var(--primary)">Next</div>
+        <div class="tl-connector"></div>
+        <div class="tl-node" style="background: var(--primary)">2</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-pill" style="background: var(--purple)">Phase 2</div>
+        <div class="tl-connector"></div>
+        <div class="tl-node" style="background: var(--purple)">3</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-pill" style="background: var(--amber)">Phase 2</div>
+        <div class="tl-connector"></div>
+        <div class="tl-node" style="background: var(--amber)">4</div>
+      </div>
+    </div>
+
+    <div class="tl-cards">
+      <div class="tl-card">
+        <h4 style="color: var(--green)">Phase 1</h4>
+        <div class="sub">M1 + M2 + M3</div>
+        <p>Ingestion, tracking, rule-based behaviour</p>
+      </div>
+      <div class="tl-card">
+        <h4 style="color: var(--primary)">M4</h4>
+        <div class="sub">Face Recognition</div>
+        <p>FaceNet / DeepFace watchlist matching</p>
+      </div>
+      <div class="tl-card">
+        <h4 style="color: var(--purple)">M5</h4>
+        <div class="sub">Backend + Cloud</div>
+        <p>FastAPI, RBAC, Docker deployment</p>
+      </div>
+      <div class="tl-card">
+        <h4 style="color: var(--amber)">M6</h4>
+        <div class="sub">Dashboard + Analytics</div>
+        <p>React UI, mobile alerts, search</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+<!-- ========== 14 REFERENCES ========== -->
+<section class="slide" data-slide="15">
+  <div class="slide-header">
+    <div class="section-label">14 — References</div>
+    <div class="slide-title">References</div>
+    <div class="title-underline"></div>
+  </div>
+
+  <div class="refs-grid">
+    <div class="ref-item"><div class="ref-num">1.</div><p>Bradski, G. (2000). The OpenCV Library. <em>Dr. Dobb's Journal of Software Tools</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">2.</div><p>IETF (2016). Real Time Streaming Protocol 2.0 (RFC 7826).</p></div>
+    <div class="ref-item"><div class="ref-num">3.</div><p>Jocher, G. et al. (2023). Ultralytics YOLOv8. GitHub repository.</p></div>
+    <div class="ref-item"><div class="ref-num">4.</div><p>Zhang, Y. et al. (2022). ByteTrack: Multi-Object Tracking by Associating Every Detection Box. <em>ECCV 2022</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">5.</div><p>Bewley, A. et al. (2016). Simple Online and Realtime Tracking (SORT). <em>IEEE ICIP 2016</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">6.</div><p>Wojke, N. et al. (2017). Simple Online and Realtime Tracking with a Deep Association Metric. <em>IEEE ICIP 2017</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">7.</div><p>Bazarevsky, V. et al. (2020). BlazePose: On-device Real-time Body Pose Tracking. <em>CVPR 2020 Workshop</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">8.</div><p>Yan, S. et al. (2018). Spatial-Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition. <em>AAAI 2018</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">9.</div><p>Sultani, W. et al. (2018). Real-World Anomaly Detection in Surveillance Videos. <em>CVPR 2018</em>.</p></div>
+    <div class="ref-item"><div class="ref-num">10.</div><p>Roboflow (2023). supervision: reusable computer vision tools. GitHub.</p></div>
+  </div>
+
+  <div class="slide-footer">
+    <span>Smart CCTV AI &middot; Module 1 Progress</span>
+    <span class="page-num"></span>
+  </div>
+</section>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button id="prev" title="Previous (←)">◀</button>
+  <div class="counter"><span id="cur">1</span> / <span id="total">15</span></div>
+  <button id="next" title="Next (→)">▶</button>
+  <button id="fs" title="Fullscreen (F)">⛶</button>
+</div>
+
+<div class="hint">← → arrows &middot; F fullscreen &middot; P print/PDF</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+document.getElementById('total').textContent = total;
+
+let current = 0;
+
+function show(idx) {
+  current = Math.max(0, Math.min(total - 1, idx));
+  slides.forEach((s, i) => s.classList.toggle('active', i === current));
+  document.getElementById('cur').textContent = current + 1;
+  document.querySelectorAll('.page-num').forEach((el, i) => {
+    el.textContent = (i + 1) + ' / ' + (total - 1);
+  });
+  scaleSlides();
+}
+
+function scaleSlides() {
+  const s = slides[current];
+  if (!s) return;
+  const scaleX = window.innerWidth / 1280;
+  const scaleY = window.innerHeight / 720;
+  const scale = Math.min(scaleX, scaleY);
+  s.style.transform = `scale(${scale})`;
+}
+
+document.getElementById('next').addEventListener('click', () => show(current + 1));
+document.getElementById('prev').addEventListener('click', () => show(current - 1));
+document.getElementById('fs').addEventListener('click', () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(current + 1); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(current - 1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(total - 1);
+  else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  else if (e.key === 'p' || e.key === 'P') { e.preventDefault(); window.print(); }
+});
+
+window.addEventListener('resize', scaleSlides);
+window.addEventListener('load', () => { show(0); });
+</script>
+
+</body>
+</html>

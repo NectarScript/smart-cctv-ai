@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-dashboard",
+      "runtimeExecutable": "C:\\Users\\Asus\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "runtimeArgs": ["scripts/web_dashboard.py", "--source", "0", "--port", "8080"],
+      "port": 8080
+    }
+  ]
+}

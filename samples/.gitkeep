@@ -1,0 +1,2 @@
+# Drop test clips here (e.g. intrusion.mp4, loiter.mp4).
+# These are referenced by config.yaml and are *not* committed (see .gitignore).

@@ -1,0 +1,49 @@
+# Smart CCTV AI — site configuration
+# Edit this file to add cameras and zones. All thresholds live here, not in code.
+
+app:
+  name: "Smart CCTV AI"
+  host: "0.0.0.0"
+  port: 8000
+  device: "cuda"            # "cuda" | "cpu" | "auto"
+  log_level: "INFO"
+
+detection:
+  model: "yolo11n.pt"       # downloaded by setup.bat into ./models
+  conf: 0.35
+  iou: 0.5
+  imgsz: 640
+  tracker: "bytetrack.yaml" # ultralytics builtin
+  person_class: 0           # COCO: person
+
+behaviour:
+  cooldown_seconds: 20      # minimum gap between same-type events on same track
+
+  intrusion:
+    enabled: true
+
+  loitering:
+    enabled: true
+    dwell_seconds: 10       # same track inside zone for >= N seconds
+
+# Cameras: source can be a file path (relative to repo root), a webcam index
+# (as string "0"), or an rtsp://... / http://... URL.
+cameras:
+  - id: "cam1"
+    name: "Demo (sample video)"
+    source: "samples/intrusion.mp4"
+    fps: 15
+    zones:
+      - name: "restricted_A"
+        polygon: [[100, 100], [540, 100], [540, 380], [100, 380]]
+        rules: ["intrusion", "loitering"]
+
+# M2+ (populated later; keep keys so config.load is stable)
+alerts:
+  telegram:
+    enabled: false
+    chat_id: ""             # set in .env, overrides this
+vlm:
+  enabled: false
+  model: "qwen2.5vl:3b"
+  ollama_url: "http://127.0.0.1:11434"
