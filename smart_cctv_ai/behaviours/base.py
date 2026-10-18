@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Iterable, Optional
 import numpy as np
 from ..detect.yolo import Track
+from ..detect.pose import PoseKeypoints
 from ..schema import BehaviourType, Severity
 from ..zones import Zone
 
@@ -14,6 +15,8 @@ class BehaviourContext:
     ts: float
     tracks: list[Track]
     zones: list[Zone]
+    poses: list[PoseKeypoints] | None = None
+    objects: list[Track] | None = None   # non-person detections (bag, backpack, suitcase)
 
 
 @dataclass

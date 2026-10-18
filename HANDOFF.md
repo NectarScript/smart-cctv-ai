@@ -77,8 +77,52 @@ by design — copy clips in by hand.
   `setup.bat` auto-copies `.env.example` → `.env` on first run.
 
 ## Known limitations (Milestone 1)
-- Telegram alerts, VLM verification, pose-based rules (fighting / fall /
-  running), event clips (vs snapshots), zone editor UI, CLIP search, and
-  the chat agent are **M2–M3**. The pipeline keeps running without them.
 - First `run.bat` is slow (~15 s): ultralytics compiles kernels on first
   CUDA call.
+
+## Milestone 2 — Day 2 (branch `m2/day2`)
+On top of M1, this branch adds:
+- **Pose** via `yolo11n-pose.pt` (runs every Nth frame when ≥1 person present).
+- **Rules**: `running`, `fall`, `fighting`, `crowd_surge`, `unattended_object`.
+- **Clip recorder**: 4 s pre + 6 s post event, written as `.mp4` into
+  `data/clips/`. Served at `GET /events/{id}/clip` (dashboard shows a video player).
+- **Telegram alerts**: snapshot sent immediately, clip sent when ready.
+  Enable: fill `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env`.
+  Alerter is a worker thread and never blocks the pipeline.
+- **VLM verification** via local Ollama (`qwen2.5vl:3b`): on Suspicious/Critical
+  events a short JSON `{verdict, summary}` is written back to the event and shown
+  in the dashboard. Timeout 10 s, fails open.
+- **Dashboard header** now shows live pose / recorder / telegram / vlm badges.
+- **config.yaml**: new `recorder:` block, new `behaviour.*` thresholds,
+  `alerts.telegram.*`, `vlm.*`.
+
+### Day 2 extra setup on the GPU PC
+Pose weights are pulled by `setup.bat` (just re-run it, or let ultralytics
+auto-download on first run). For VLM:
+```
+ollama pull qwen2.5vl:3b
+ollama serve      # usually runs automatically on Windows after install
+```
+For Telegram alerts:
+1. Message @BotFather, create a bot, grab the token.
+2. Add the bot to a group, send a message there.
+3. `curl https://api.telegram.org/bot<TOKEN>/getUpdates` → chat.id.
+4. Put both into `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=1234:ABC...
+   TELEGRAM_CHAT_ID=-100xxxxxxxxxx
+   ```
+
+### Expected on `run.bat` for M2
+Console lines (within ~20 s):
+```
+loading YOLO weights: models/yolo11n.pt (device=cuda)
+loading YOLO-pose weights: models/yolo11n-pose.pt (device=cuda)
+Smart CCTV AI started on 0.0.0.0:8000
+```
+Dashboard header shows `● pose · ● recorder · ● telegram · ● vlm` when all
+features are up. A fall / fight event should land in the Events panel with:
+- an inline MP4 player (clip),
+- an italic VLM one-liner above it.
+Your Telegram group gets the snapshot immediately and the clip when it's
+done writing (~6 s later).

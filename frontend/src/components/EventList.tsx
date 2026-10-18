@@ -38,7 +38,27 @@ export default function EventList({ events }: { events: EventRow[] }) {
               <> · tracks: <span className="text-slate-200">{e.track_ids.join(",")}</span></>
             )}
           </div>
-          {e.snapshot && (
+          {e.vlm_summary && (
+            <div className="mt-2 text-xs italic text-slate-300 border-l-2 border-accent/60 pl-2">
+              {e.vlm_verdict && (
+                <span className={`mr-2 uppercase font-semibold ${
+                  e.vlm_verdict === "confirmed" ? "text-emerald-400" :
+                  e.vlm_verdict === "rejected" ? "text-slate-400" : "text-warn"
+                }`}>
+                  {e.vlm_verdict}
+                </span>
+              )}
+              {e.vlm_summary}
+            </div>
+          )}
+          {e.clip ? (
+            <video
+              src={`/events/${e.id}/clip`}
+              controls
+              preload="metadata"
+              className="mt-2 rounded-md border border-edge w-full max-h-56 bg-black"
+            />
+          ) : e.snapshot && (
             <img
               src={`/events/${e.id}/snapshot`}
               alt={`event ${e.id}`}

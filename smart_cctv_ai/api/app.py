@@ -7,6 +7,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from loguru import logger
 
 from .. import db
+from ..alerts.telegram import TelegramAlerter
+from ..alerts.vlm import VlmVerifier
 from ..config import Config, load_config
 from ..logging_setup import setup as setup_logging
 from ..pipeline import Pipeline
@@ -25,6 +27,28 @@ async def lifespan(app: FastAPI):
     db.init()
     _pipeline = Pipeline(_cfg)
     stream_mod.set_pipeline(_pipeline)
+
+    if _cfg.alerts.telegram.enabled:
+        tg = TelegramAlerter(
+            token=_cfg.telegram_bot_token,
+            chat_id=_cfg.alerts.telegram.chat_id,
+            min_severity=_cfg.alerts.telegram.min_severity,
+        )
+        if tg.enabled:
+            tg.start()
+            _pipeline.telegram = tg
+
+    if _cfg.vlm.enabled:
+        vlm = VlmVerifier(
+            model=_cfg.vlm.model,
+            ollama_url=_cfg.vlm.ollama_url,
+            timeout_seconds=_cfg.vlm.timeout_seconds,
+            verify_min_severity=_cfg.vlm.verify_min_severity,
+            on_result=_pipeline.update_vlm,
+        )
+        vlm.start()
+        _pipeline.vlm = vlm
+
     _pipeline.start()
     logger.info(f"{_cfg.app.name} started on {_cfg.app.host}:{_cfg.app.port}")
     try:
@@ -44,7 +68,14 @@ def create_app() -> FastAPI:
     def healthz():
         if _pipeline is None:
             return JSONResponse({"ok": False, "reason": "pipeline not started"}, 503)
-        return {"ok": True, "cameras": _pipeline.cams.status()}
+        return {
+            "ok": True,
+            "cameras": _pipeline.cams.status(),
+            "telegram": bool(_pipeline.telegram and _pipeline.telegram.enabled),
+            "vlm": _pipeline.vlm is not None,
+            "recorder": _pipeline.recorder is not None,
+            "pose": _pipeline.pose is not None,
+        }
 
     # Static: frontend build (built by setup.bat / update.bat on friend's PC)
     dist = Path("frontend/dist")

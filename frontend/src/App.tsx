@@ -1,21 +1,35 @@
 import { useEffect, useState } from "react";
-import { api, Camera, EventRow } from "./api";
+import { api, Camera, EventRow, Health } from "./api";
 import CameraTile from "./components/CameraTile";
 import EventList from "./components/EventList";
+
+function Badge({ label, ok }: { label: string; ok: boolean }) {
+  return (
+    <span className={`text-xs px-2 py-0.5 rounded ${
+      ok ? "bg-emerald-500/15 text-emerald-300" : "bg-slate-500/15 text-slate-400"
+    }`}>
+      {ok ? "●" : "○"} {label}
+    </span>
+  );
+}
 
 export default function App() {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [events, setEvents] = useState<EventRow[]>([]);
+  const [health, setHealth] = useState<Health | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     const tick = async () => {
       try {
-        const [cams, evs] = await Promise.all([api.cameras(), api.events(50)]);
+        const [cams, evs, h] = await Promise.all([
+          api.cameras(), api.events(50), api.health().catch(() => null),
+        ]);
         if (cancelled) return;
         setCameras(cams);
         setEvents(evs);
+        setHealth(h);
         setError(null);
       } catch (e: any) {
         if (!cancelled) setError(e.message || String(e));
@@ -34,8 +48,16 @@ export default function App() {
           <h1 className="text-lg font-semibold tracking-wide">Smart CCTV AI</h1>
           <span className="text-xs text-slate-400">v0.1 · Milestone 1</span>
         </div>
-        <div className="text-xs text-slate-400">
-          {cameras.length} camera{cameras.length === 1 ? "" : "s"}
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span>{cameras.length} camera{cameras.length === 1 ? "" : "s"}</span>
+          {health && (
+            <>
+              <Badge label="pose" ok={!!health.pose} />
+              <Badge label="recorder" ok={!!health.recorder} />
+              <Badge label="telegram" ok={!!health.telegram} />
+              <Badge label="vlm" ok={!!health.vlm} />
+            </>
+          )}
           {error && <span className="ml-3 text-bad">· {error}</span>}
         </div>
       </header>
