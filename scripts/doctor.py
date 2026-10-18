@@ -64,6 +64,14 @@ def c_weights():
     return (det.exists() and pose.exists()), ", ".join(parts)
 
 
+def c_openclip():
+    try:
+        import open_clip  # type: ignore
+        return True, f"open_clip {open_clip.__version__}"
+    except Exception as e:
+        return False, f"not importable: {e}"
+
+
 def c_opencv():
     try:
         import cv2  # type: ignore
@@ -171,6 +179,7 @@ def main() -> int:
         ("python-3.11", c_python),
         ("cuda-torch", c_cuda),
         ("ultralytics", c_ultralytics),
+        ("open-clip", c_openclip),
         ("yolo-weights", c_weights),
         ("opencv", c_opencv),
         ("ffmpeg", c_ffmpeg),
@@ -190,7 +199,7 @@ def main() -> int:
     print(f"\nwrote {out}")
 
     # Non-blocking failures (M2 features): don't fail the overall exit code for them
-    soft = {"ollama", "telegram", "yolo-weights", "frontend-dist"}
+    soft = {"ollama", "telegram", "yolo-weights", "frontend-dist", "open-clip"}
     hard_fail = any(not c["ok"] and c["name"] not in soft for c in report["checks"])
     return 1 if hard_fail else 0
 

@@ -15,6 +15,7 @@ from .behaviours import build_behaviours, BehaviourContext, Candidate, \
     pose_needed, object_classes_needed
 from .detect.yolo import YoloTracker, Track
 from .detect.pose import PoseEstimator, PoseKeypoints
+from .privacy import blur_heads
 from .recorder import ClipRecorder
 from .schema import Event, Severity
 from .zones import Zone
@@ -77,6 +78,7 @@ class Pipeline(threading.Thread):
         # Alerts + VLM wired by api.app (needs the pipeline instance)
         self.telegram = None
         self.vlm = None
+        self.privacy_mode = False  # togglable via API
 
     def start_cameras(self) -> None:
         for cam in self.cfg.cameras:
@@ -145,11 +147,18 @@ class Pipeline(threading.Thread):
                         logger.error(f"[{cam_id}] pose error: {e}")
                 state.last_poses = poses
 
-                if self.recorder is not None:
-                    self.recorder.push(cam_id, f.frame)
+                work_frame = f.frame
+                if self.privacy_mode and persons:
+                    work_frame = blur_heads(f.frame.copy(), persons)
 
-                self._run_rules(state, f, persons, objects, poses)
-                self._render(state, f.frame, persons, poses)
+                if self.recorder is not None:
+                    self.recorder.push(cam_id, work_frame)
+
+                # Rules see the ORIGINAL frame (so detection accuracy is unchanged);
+                # the overlay/stream + saved snapshots see the privacy frame.
+                self._run_rules(state, f, persons, objects, poses,
+                                save_frame=work_frame)
+                self._render(state, work_frame, persons, poses)
                 did_work = True
                 frames_since += 1
 
@@ -166,7 +175,8 @@ class Pipeline(threading.Thread):
 
     def _run_rules(self, state: CameraState, f: Frame,
                    persons: list[Track], objects: list[Track],
-                   poses: list[PoseKeypoints]) -> None:
+                   poses: list[PoseKeypoints],
+                   save_frame: np.ndarray) -> None:
         ctx = BehaviourContext(camera_id=f.camera_id, frame=f.frame,
                                ts=f.ts, tracks=persons, zones=state.zones,
                                poses=poses, objects=objects)
@@ -179,7 +189,7 @@ class Pipeline(threading.Thread):
         for c in candidates:
             if not self._cooldown_ok(state, c, f.ts):
                 continue
-            self._persist(state, f, c)
+            self._persist(state, f, c, save_frame)
 
     def _cooldown_ok(self, state: CameraState, c: Candidate, ts: float) -> bool:
         for tid in c.track_ids or [0]:
@@ -190,9 +200,10 @@ class Pipeline(threading.Thread):
             state.cooldown[key] = ts
         return True
 
-    def _persist(self, state: CameraState, f: Frame, c: Candidate) -> None:
+    def _persist(self, state: CameraState, f: Frame, c: Candidate,
+                 save_frame: np.ndarray) -> None:
         now = datetime.now(timezone.utc)
-        snap_rel = self._save_snapshot(f, c)
+        snap_rel = self._save_snapshot(f.camera_id, c, save_frame)
         ev = Event(
             camera_id=f.camera_id, type=c.type, severity=c.severity,
             track_ids=c.track_ids, zone=c.zone,
@@ -251,12 +262,13 @@ class Pipeline(threading.Thread):
         except Exception as e:
             logger.error(f"update vlm failed for #{event_id}: {e}")
 
-    def _save_snapshot(self, f: Frame, c: Candidate) -> str:
+    def _save_snapshot(self, camera_id: str, c: Candidate,
+                       frame: np.ndarray) -> str:
         ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")[:-3]
-        name = f"{f.camera_id}_{c.type.value}_{ts}.jpg"
+        name = f"{camera_id}_{c.type.value}_{ts}.jpg"
         path = Path("data/clips") / name
         try:
-            cv2.imwrite(path.as_posix(), f.frame,
+            cv2.imwrite(path.as_posix(), frame,
                         [int(cv2.IMWRITE_JPEG_QUALITY), 85])
         except Exception as e:
             logger.error(f"snapshot save failed: {e}")
