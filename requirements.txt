@@ -1,28 +1,29 @@
-# Core
-opencv-python>=4.8.0
-numpy>=1.24.0
+# Smart CCTV AI — pinned for reproducibility (Python 3.11, Windows CUDA)
+# Install order: torch (CUDA wheel index) handled in setup.bat before this file.
 
-# Detection (M2)
-ultralytics>=8.3.0
+# Vision / detection
+ultralytics==8.3.40
+opencv-python==4.10.0.84
+numpy==1.26.4
+pillow==10.4.0
+lap==0.4.0
 
-# Tracking (M2)
-supervision>=0.25.0
+# Backend
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+sqlmodel==0.0.22
+pydantic==2.10.3
+pydantic-settings==2.7.0
+python-multipart==0.0.19
 
-# Pose estimation (M3)
-mediapipe>=0.10.14,<1.0
+# Config / utils
+pyyaml==6.0.2
+python-dotenv==1.0.1
+loguru==0.7.3
 
-# ML framework
-torch>=2.1.0
-torchvision>=0.16.0
+# (M2) alerts + VLM
+python-telegram-bot==21.9
+httpx==0.28.1
 
-# Web dashboard
-flask>=3.0
-
-# Configuration
-pyyaml>=6.0,<7.0
-pydantic>=2.0,<3.0
-pydantic-settings>=2.0,<3.0
-
-# Testing
-pytest>=8.0,<9.0
-pytest-timeout>=2.3,<3.0
+# (M2) ffmpeg bindings
+imageio-ffmpeg==0.5.1

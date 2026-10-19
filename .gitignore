@@ -1,43 +1,38 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.egg-info/
-dist/
-build/
-*.egg
-
-# Virtual environments
-venv/
 .venv/
-env/
+venv/
+.pytest_cache/
+.mypy_cache/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Node / frontend build
+node_modules/
+frontend/dist/
 
-# Model weights (auto-downloaded)
+# Data / artifacts
+data/
+logs/
 models/*.pt
 models/*.onnx
-models/*.engine
-models/*.task
-!models/.gitkeep
+samples/*.mp4
+samples/*.mkv
+samples/*.avi
+samples/*.mov
+!samples/.gitkeep
+!data/.gitkeep
+!logs/.gitkeep
 
-# OS
+# Secrets
+.env
+.env.local
+
+# OS / editor
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
 
-# Logs
-*.log
-
-# Test artifacts
-tests/fixtures/*.mp4
-tests/fixtures/*.jpg
-!tests/fixtures/.gitkeep
-
-# Output
-output/
-runs/
-uploads/
+# Local build artifacts
+pptx_build/

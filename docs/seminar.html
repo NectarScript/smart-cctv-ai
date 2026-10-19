@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart CCTV AI — Project Seminar</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #f8fafc;
+  --panel-2: #f1f5f9;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --text: #1e293b;
+  --head: #0f172a;
+  --muted: #64748b;
+  --primary: #1e40af;
+  --primary-2: #2563eb;
+  --primary-soft: #dbeafe;
+  --accent: #0891b2;
+  --accent-soft: #cffafe;
+  --emerald: #059669;
+  --emerald-soft: #d1fae5;
+  --amber: #d97706;
+  --amber-soft: #fef3c7;
+  --rose: #dc2626;
+  --rose-soft: #fee2e2;
+  --violet: #7c3aed;
+  --violet-soft: #ede9fe;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:#ffffff; }
+body {
+  font-family: 'Inter', 'Segoe UI', 'Aptos', Calibri, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text);
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide {
+  width: 1920px;
+  height: 1080px;
+  background: #fff;
+  position: relative;
+  display: none;
+  transform-origin: center center;
+  overflow: hidden;
+}
+.slide.active { display: block; }
+
+/* ============ CORNER GLYPH ============ */
+.corner {
+  position: absolute;
+  top: 60px; right: 80px;
+  display: flex; align-items: center; gap: 14px;
+}
+.corner-num {
+  font-size: 20px; font-weight: 800;
+  color: var(--primary); letter-spacing: 3px;
+}
+.corner-line {
+  width: 60px; height: 3px; background: var(--primary);
+}
+
+/* ============ HEADER ============ */
+.header {
+  position: absolute;
+  top: 90px; left: 100px; right: 100px;
+}
+.eyebrow {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.title {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--head);
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+.rule {
+  width: 100px; height: 6px;
+  background: var(--primary);
+  margin-top: 22px;
+}
+
+/* ============ CONTENT REGION ============ */
+.content {
+  position: absolute;
+  top: 320px;
+  left: 100px; right: 100px;
+  bottom: 90px;
+}
+
+.foot {
+  position: absolute;
+  bottom: 40px; left: 100px; right: 100px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 20px; color: var(--muted);
+}
+
+/* ============ TITLE SLIDE ============ */
+.slide.title-slide { padding: 0; }
+.title-slide .band-left {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 24px; background: var(--primary);
+}
+.title-slide .band-top {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 24px; background: var(--primary);
+}
+.title-slide .band-bot {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 24px; background: var(--primary);
+}
+.title-inner {
+  position: absolute;
+  top: 80px; bottom: 80px; left: 120px; right: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.title-top {
+  text-align: center;
+}
+.college {
+  font-size: 54px;
+  font-weight: 800;
+  color: var(--head);
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  padding: 0 40px;
+}
+.dept {
+  font-size: 32px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 22px;
+  letter-spacing: 0.5px;
+}
+.session {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 10px 32px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 5px;
+  border-radius: 4px;
+}
+
+.title-mid {
+  text-align: center;
+  margin: 40px 0;
+}
+.pj-label {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+.pj-title {
+  font-size: 76px;
+  font-weight: 900;
+  color: var(--head);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+}
+.pj-title span { color: var(--primary); }
+.pj-tag {
+  font-size: 32px;
+  color: var(--text);
+  font-weight: 400;
+  margin-top: 22px;
+  padding: 0 100px;
+  line-height: 1.35;
+}
+
+.title-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  padding: 0 40px;
+}
+.people-block .k {
+  font-size: 20px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.people-block .v {
+  font-size: 30px;
+  color: var(--head);
+  font-weight: 700;
+  line-height: 1.6;
+}
+.people-block .k.mt { margin-top: 22px; }
+.people-block ul { list-style: none; }
+.people-block li {
+  font-size: 26px;
+  color: var(--head);
+  font-weight: 600;
+  padding: 4px 0;
+}
+
+/* ============ 01 INTRO ============ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; height: 100%; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; height: 100%; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+.h-inline {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+.p-lg {
+  font-size: 28px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.p-lg + .p-lg { margin-top: 22px; }
+
+.solution-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  padding: 40px;
+}
+.approach-list { display: flex; flex-direction: column; gap: 26px; margin-top: 20px; }
+.approach {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.approach-num {
+  width: 70px; height: 70px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800;
+}
+.approach h4 { font-size: 28px; color: var(--head); font-weight: 700; }
+.approach p { font-size: 22px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+
+/* ============ 02 LITERATURE ============ */
+.lit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; height: 100%; }
+.lit-col {
+  display: flex; flex-direction: column;
+}
+.lit-band {
+  padding: 24px;
+  border-radius: 14px 14px 0 0;
+  color: white;
+  font-size: 30px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.lit-body {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.lit-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lit-item:last-child { border-bottom: none; }
+.lit-item h4 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.lit-item p {
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.lit-year {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 4px;
+  margin-right: 10px;
+  color: white;
+}
+
+/* ============ 03 AIM ============ */
+.aim-banner {
+  background: linear-gradient(90deg, var(--primary-soft), #fff);
+  border-left: 12px solid var(--primary);
+  border-radius: 12px;
+  padding: 40px 50px;
+  margin-bottom: 40px;
+}
+.aim-banner .k {
+  font-size: 22px; font-weight: 800; color: var(--primary);
+  letter-spacing: 4px; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.aim-banner .v {
+  font-size: 32px; color: var(--head); line-height: 1.4;
+}
+
+.obj-heading {
+  font-size: 22px; font-weight: 800; color: var(--primary);
+  letter-spacing: 4px; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.obj-card {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+  transition: transform 0.2s;
+  height: 100%;
+}
+.obj-num {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.obj-bar {
+  width: 50px; height: 5px;
+  background: var(--primary);
+  margin: 14px 0 20px;
+}
+.obj-t {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--head);
+  margin-bottom: 12px;
+}
+.obj-d {
+  font-size: 22px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* ============ 04 METHODOLOGY ============ */
+.method-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+}
+.mp-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.mp-hex {
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; font-weight: 900;
+  color: white;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+.mp-stage h4 { font-size: 26px; color: var(--head); font-weight: 800; }
+.mp-stage p { font-size: 20px; color: var(--muted); margin-top: 6px; }
+.mp-arrow {
+  color: var(--line-strong);
+  font-size: 34px;
+  align-self: center;
+  margin-top: -60px;
+}
+.principles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 60px;
+  margin-top: 60px;
+}
+.principle {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.principle .dot {
+  width: 8px; align-self: stretch;
+  background: var(--primary); border-radius: 4px;
+}
+.principle h4 { font-size: 26px; font-weight: 800; color: var(--head); margin-bottom: 4px; }
+.principle p { font-size: 22px; color: var(--text); line-height: 1.4; }
+
+/* ============ 05 MODULE DIST ============ */
+.mod-hex-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+}
+.mod-card {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.mod-side {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 10px;
+}
+.mod-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 26px;
+  margin-left: 12px;
+}
+.mod-id-badge {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 0;
+}
+.mod-status {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.status-done { background: var(--emerald-soft); color: var(--emerald); }
+.status-plan { background: var(--amber-soft); color: var(--amber); }
+.mod-name {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--head);
+  margin: 0 12px 10px;
+  line-height: 1.2;
+}
+.mod-phase {
+  font-size: 22px;
+  color: var(--muted);
+  margin: 0 12px;
+  font-weight: 500;
+}
+
+/* ============ 06 M1 ============ */
+.m1-purpose {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 60px;
+  height: 100%;
+}
+.stat-strip {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.stat-strip:last-child { margin-bottom: 0; }
+.stat-big {
+  font-size: 90px;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  min-width: 130px;
+  text-align: center;
+}
+.stat-info h4 { font-size: 28px; color: var(--head); font-weight: 800; }
+.stat-info p { font-size: 22px; color: var(--muted); margin-top: 4px; }
+.resp-item {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 20px;
+  padding: 14px 0;
+  align-items: center;
+}
+.resp-item .b {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 3px;
+}
+.resp-item p { font-size: 26px; color: var(--text); line-height: 1.4; }
+
+/* ============ 07 ARCH SVG ============ */
+.arch-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 60px;
+  height: 100%;
+}
+.arch-svg-holder {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 30px;
+  display: flex; align-items: center; justify-content: center;
+}
+.arch-detail-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+.arch-row {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: baseline;
+}
+.arch-row:last-child { border-bottom: none; }
+.arch-row strong {
+  font-size: 24px;
+  color: var(--primary);
+  font-weight: 800;
+}
+.arch-row span {
+  font-size: 22px;
+  color: var(--text);
+}
+
+/* ============ 08 IMPLEMENTATION ============ */
+.impl-2col {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 50px;
+}
+.impl-row {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 22px 28px;
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+  align-items: center;
+}
+.impl-row strong { font-size: 26px; font-weight: 800; color: var(--primary); font-family: 'Consolas', monospace; }
+.impl-row span { font-size: 22px; color: var(--text); }
+
+.tech-stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tech-pill {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 800;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 22px;
+  border: 2px solid transparent;
+}
+
+/* ============ 09 DEMO ============ */
+.demo-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 30px;
+  height: 100%;
+}
+.demo-slot {
+  background: var(--panel-2);
+  border: 3px dashed var(--primary);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+}
+.demo-slot .frame-corner {
+  position: absolute;
+  width: 30px; height: 30px;
+  border: 4px solid var(--primary);
+}
+.demo-slot .fc-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+.demo-slot .fc-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+.demo-slot .fc-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+.demo-slot .fc-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+.demo-slot h4 {
+  font-size: 32px;
+  color: var(--primary);
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.demo-slot p {
+  font-size: 22px;
+  color: var(--muted);
+}
+
+/* ============ 10 LIMITATIONS ============ */
+.split-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  height: 100%;
+}
+.split-col {
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.split-head {
+  padding: 24px 32px;
+  font-size: 30px;
+  font-weight: 800;
+  display: flex; align-items: center; gap: 16px;
+}
+.split-head.red { background: var(--rose-soft); color: var(--rose); }
+.split-head.green { background: var(--emerald-soft); color: var(--emerald); }
+.split-body { padding: 28px 32px; }
+.split-item {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.split-item:last-child { border-bottom: none; }
+.split-item .m {
+  font-weight: 900;
+  font-size: 26px;
+}
+.split-item.r .m { color: var(--rose); }
+.split-item.g .m { color: var(--emerald); }
+.split-item p { font-size: 24px; color: var(--text); line-height: 1.35; }
+
+/* ============ 11 M2 CONTEXT ============ */
+.m2-flow {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  margin: 30px 0 50px;
+}
+.m2-node {
+  background: white;
+  border: 3px solid;
+  border-radius: 16px;
+  padding: 28px;
+  text-align: center;
+  flex: 1;
+}
+.m2-node .lbl {
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1;
+}
+.m2-node .desc {
+  font-size: 22px;
+  color: var(--muted);
+  margin-top: 14px;
+  font-weight: 600;
+}
+.m2-arrow {
+  font-size: 38px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.m2-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+}
+.tech-list {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 30px;
+}
+.tech-list-h {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+.tech-list-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.tech-list-item:last-child { border-bottom: none; }
+.tech-list-item h4 { font-size: 24px; color: var(--head); font-weight: 800; }
+.tech-list-item p { font-size: 20px; color: var(--muted); margin-top: 4px; }
+
+.callout {
+  background: var(--amber-soft);
+  border-left: 8px solid var(--amber);
+  border-radius: 8px;
+  padding: 24px 32px;
+}
+.callout .k {
+  font-size: 18px; font-weight: 800; color: var(--amber);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.callout p { font-size: 22px; color: var(--text); line-height: 1.4; }
+
+/* ============ 12 SOFTWARE ============ */
+.sw-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+.env-tbl { width: 100%; border-collapse: collapse; }
+.env-tbl td {
+  padding: 18px 12px;
+  font-size: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.env-tbl td:first-child {
+  color: var(--head);
+  font-weight: 700;
+  width: 46%;
+}
+.env-tbl tr:last-child td { border-bottom: none; }
+
+.dep-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.dep-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.dep-card .name { font-size: 22px; font-weight: 800; color: var(--head); font-family: 'Consolas', monospace; }
+.dep-card .ver { font-size: 18px; color: var(--muted); font-family: 'Consolas', monospace; }
+.dep-tag {
+  font-size: 14px; font-weight: 800; color: white;
+  padding: 6px 14px; border-radius: 14px; letter-spacing: 1px;
+}
+.tag-m1 { background: #14b8a6; }
+.tag-m2 { background: var(--primary); }
+.tag-m3 { background: var(--violet); }
+.tag-ml { background: var(--amber); }
+.tag-core { background: var(--muted); }
+.tag-cfg { background: var(--emerald); }
+.tag-web { background: var(--accent); }
+
+/* ============ 13 FUTURE ============ */
+.tl-wrap { padding: 30px 40px; }
+.tl-line {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  margin: 40px 0 40px;
+  position: relative;
+}
+.tl-line::before {
+  content: '';
+  position: absolute;
+  top: 90px;
+  left: 100px; right: 100px;
+  height: 4px;
+  background: var(--line-strong);
+  z-index: 0;
+}
+.tl-item {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.tl-pill {
+  color: white; font-weight: 800; letter-spacing: 1px;
+  padding: 10px 24px; border-radius: 6px;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.tl-node {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 5px solid white;
+  color: white; font-size: 30px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.tl-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  margin-top: 40px;
+}
+.tl-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+}
+.tl-card h4 { font-size: 34px; font-weight: 900; margin-bottom: 10px; }
+.tl-card .sub { font-size: 22px; color: var(--head); font-weight: 700; margin-bottom: 14px; }
+.tl-card p { font-size: 20px; color: var(--text); line-height: 1.4; }
+
+/* ============ 14 REFERENCES ============ */
+.refs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 60px;
+}
+.ref-row {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+}
+.ref-n {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 22px;
+}
+.ref-row p {
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1.45;
+}
+.ref-row p em { color: var(--muted); font-style: italic; }
+
+/* ============ NAV ============ */
+.controls {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 32px;
+  display: flex; align-items: center; gap: 16px;
+  font-size: 14px; z-index: 1000;
+  backdrop-filter: blur(10px);
+  transition: opacity 0.3s;
+}
+.controls.hidden { opacity: 0; pointer-events: none; }
+.controls button {
+  background: transparent; border: none; color: white;
+  cursor: pointer; padding: 6px 12px;
+  font-size: 18px; border-radius: 4px;
+}
+.controls button:hover { background: rgba(255,255,255,0.15); }
+.counter { min-width: 80px; text-align: center; font-weight: 600; }
+
+.hint {
+  position: fixed;
+  top: 20px; right: 20px;
+  background: rgba(15, 23, 42, 0.9);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  z-index: 1000;
+  transition: opacity 0.3s;
+}
+.hint.hidden { opacity: 0; pointer-events: none; }
+
+@media print {
+  html, body { background: white; overflow: visible; height: auto; }
+  .stage { position: static; display: block; }
+  .slide { display: block !important; page-break-after: always; margin: 0 auto; transform: none !important; box-shadow: none; }
+  .controls, .hint { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+<!-- ===================== TITLE ===================== -->
+<section class="slide title-slide active">
+  <div class="band-top"></div>
+  <div class="band-left"></div>
+  <div class="band-bot"></div>
+
+  <div class="title-inner">
+    <div class="title-top">
+      <div class="college">Priyadarshini Bhagwati College of Engineering</div>
+      <div class="dept">Department of Information Technology</div>
+      <div class="session">SESSION 2026 – 2027</div>
+    </div>
+
+    <div class="title-mid">
+      <div class="pj-label">Project Seminar</div>
+      <div class="pj-title">Smart <span>CCTV</span> AI</div>
+      <div class="pj-tag">Intelligent Multi-Camera Surveillance &amp; Suspicious Behaviour Detection</div>
+    </div>
+
+    <div class="title-bottom">
+      <div class="people-block">
+        <div class="k">Project Mentor</div>
+        <div class="v">Anant Jain</div>
+        <div class="k mt">Project Guide</div>
+        <div class="v">Dr. Manoj Chaudhari</div>
+      </div>
+      <div class="people-block">
+        <div class="k">Group Members</div>
+        <ul>
+          <li>Uday Vairalkar</li>
+          <li>Piyush Chiwande</li>
+          <li>Krishna Surve</li>
+          <li>Anuj Hiwarkar</li>
+          <li>Yash Bahoriya</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 01 INTRODUCTION ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">01</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Introduction</div>
+    <div class="title">Introduction</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="grid-2">
+      <div>
+        <div class="h-inline">Problem</div>
+        <p class="p-lg">Traditional CCTV systems only record video. Detecting suspicious activity depends on human operators watching many feeds at once.</p>
+        <p class="p-lg">Human attention degrades sharply after 20 minutes of continuous monitoring. Critical events are missed, and intelligent commercial solutions remain proprietary and expensive.</p>
+      </div>
+
+      <div class="solution-card">
+        <div class="h-inline">Our Approach</div>
+        <div class="approach-list">
+          <div class="approach">
+            <div class="approach-num">1</div>
+            <div>
+              <h4>Multi-Camera Ingestion</h4>
+              <p>Live capture from webcams, IP cameras, and video files</p>
+            </div>
+          </div>
+          <div class="approach">
+            <div class="approach-num">2</div>
+            <div>
+              <h4>Person Detection</h4>
+              <p>YOLOv8 + ByteTrack for identity tracking</p>
+            </div>
+          </div>
+          <div class="approach">
+            <div class="approach-num">3</div>
+            <div>
+              <h4>Behaviour Analysis</h4>
+              <p>Pose-based rules for suspicious actions</p>
+            </div>
+          </div>
+          <div class="approach">
+            <div class="approach-num">4</div>
+            <div>
+              <h4>Web Dashboard</h4>
+              <p>Real-time streaming with alerts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 02 LITERATURE ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">02</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Literature Survey</div>
+    <div class="title">Literature Survey</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="lit-grid">
+
+      <div class="lit-col">
+        <div class="lit-band" style="background:#14b8a6">Video Ingestion</div>
+        <div class="lit-body">
+          <div class="lit-item">
+            <h4 style="color:#14b8a6"><span class="lit-year" style="background:#14b8a6">2000</span>OpenCV VideoCapture</h4>
+            <p>Bradski. Standard camera interfacing API used across surveillance and vision systems.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:#14b8a6"><span class="lit-year" style="background:#14b8a6">2016</span>RTSP Protocol</h4>
+            <p>RFC 7826. Dominant IP camera streaming standard for real-time video transport.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:#14b8a6"><span class="lit-year" style="background:#14b8a6">2019</span>Drop-oldest Buffering</h4>
+            <p>Chen et al. Real-time surveillance practice — favours recency over completeness.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lit-col">
+        <div class="lit-band" style="background:var(--primary)">Detection &amp; Tracking</div>
+        <div class="lit-body">
+          <div class="lit-item">
+            <h4 style="color:var(--primary)"><span class="lit-year" style="background:var(--primary)">2023</span>YOLOv8 (Ultralytics)</h4>
+            <p>Jocher et al. Modern one-stage object detector; strong CPU inference at nano size.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:var(--primary)"><span class="lit-year" style="background:var(--primary)">2022</span>ByteTrack</h4>
+            <p>Zhang et al. ECCV 2022. Reduces ID switches vs SORT by associating every box.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:var(--primary)"><span class="lit-year" style="background:var(--primary)">2017</span>DeepSORT</h4>
+            <p>Wojke et al. Appearance-based tracking; higher accuracy, higher compute cost.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lit-col">
+        <div class="lit-band" style="background:var(--violet)">Behaviour Analysis</div>
+        <div class="lit-body">
+          <div class="lit-item">
+            <h4 style="color:var(--violet)"><span class="lit-year" style="background:var(--violet)">2020</span>MediaPipe Pose</h4>
+            <p>Bazarevsky et al. BlazePose 33-keypoint model, on-device pose estimation.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:var(--violet)"><span class="lit-year" style="background:var(--violet)">2018</span>ST-GCN</h4>
+            <p>Yan et al. AAAI. Graph CNN on skeletons for action recognition — dataset heavy.</p>
+          </div>
+          <div class="lit-item">
+            <h4 style="color:var(--violet)"><span class="lit-year" style="background:var(--violet)">—</span>Rule-based Systems</h4>
+            <p>Deployed in BriefCam, Avigilon. Interpretable but low generalisation to new events.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 03 AIM & OBJECTIVE ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">03</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Aim and Objective</div>
+    <div class="title">Aim and Objective</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="aim-banner">
+      <div class="k">Aim</div>
+      <div class="v">To design and implement an intelligent multi-camera surveillance pipeline that detects and classifies suspicious human behaviour in real time using open-source AI components.</div>
+    </div>
+
+    <div class="obj-heading">Objectives</div>
+    <div class="grid-4">
+      <div class="obj-card">
+        <div class="obj-num">01</div>
+        <div class="obj-bar"></div>
+        <div class="obj-t">Ingestion</div>
+        <div class="obj-d">Build a threaded multi-camera capture layer supporting webcam, RTSP, and video files.</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">02</div>
+        <div class="obj-bar" style="background:var(--accent)"></div>
+        <div class="obj-t">Detection</div>
+        <div class="obj-d">Integrate YOLOv8 person detection with ByteTrack for persistent identity tracking.</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">03</div>
+        <div class="obj-bar" style="background:var(--violet)"></div>
+        <div class="obj-t">Behaviour</div>
+        <div class="obj-d">Implement rule-based classifier over centroid history and pose keypoints.</div>
+      </div>
+      <div class="obj-card">
+        <div class="obj-num">04</div>
+        <div class="obj-bar" style="background:var(--emerald)"></div>
+        <div class="obj-t">Interface</div>
+        <div class="obj-d">Deliver a web dashboard with live streaming and event log.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 04 METHODOLOGY ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">04</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Proposed Methodology</div>
+    <div class="title">Proposed Methodology</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="h-inline">End-to-End Pipeline</div>
+    <div class="method-pipeline">
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:#14b8a6">01</div>
+        <h4>Sources</h4>
+        <p>Webcam / RTSP / File</p>
+      </div>
+      <div class="mp-arrow">▶</div>
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:var(--primary)">02</div>
+        <h4>Ingestion</h4>
+        <p>Threaded capture</p>
+      </div>
+      <div class="mp-arrow">▶</div>
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:var(--accent)">03</div>
+        <h4>Detection</h4>
+        <p>YOLOv8n person</p>
+      </div>
+      <div class="mp-arrow">▶</div>
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:var(--violet)">04</div>
+        <h4>Tracking</h4>
+        <p>ByteTrack IDs</p>
+      </div>
+      <div class="mp-arrow">▶</div>
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:var(--amber)">05</div>
+        <h4>Behaviour</h4>
+        <p>Rules + pose</p>
+      </div>
+      <div class="mp-arrow">▶</div>
+      <div class="mp-stage">
+        <div class="mp-hex" style="background:var(--emerald)">06</div>
+        <h4>Output</h4>
+        <p>Web dashboard</p>
+      </div>
+    </div>
+
+    <div class="principles-grid">
+      <div class="principle">
+        <div class="dot"></div>
+        <div>
+          <h4>Modular Architecture</h4>
+          <p>Each module is independently testable and swappable.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="dot" style="background:var(--accent)"></div>
+        <div>
+          <h4>Real-Time First</h4>
+          <p>Drop-oldest buffering favours recency over completeness.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="dot" style="background:var(--violet)"></div>
+        <div>
+          <h4>CPU Baseline</h4>
+          <p>Runs on commodity hardware; GPU support is optional.</p>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="dot" style="background:var(--emerald)"></div>
+        <div>
+          <h4>Configurable Thresholds</h4>
+          <p>All detection thresholds exposed in YAML configuration.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 05 MODULE DISTRIBUTION ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">05</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Module Distribution</div>
+    <div class="title">Module Distribution</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div style="display: flex; flex-direction: column; gap: 30px;">
+      <div class="mod-hex-grid">
+        <div class="mod-card">
+          <div class="mod-side" style="background:#14b8a6"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M1</div>
+            <div class="mod-status status-done">Implemented</div>
+          </div>
+          <div class="mod-name">Multi-Camera Ingestion</div>
+          <div class="mod-phase">Phase 1</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-side" style="background:var(--primary)"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M2</div>
+            <div class="mod-status status-done">Implemented</div>
+          </div>
+          <div class="mod-name">Detection &amp; Tracking</div>
+          <div class="mod-phase">Phase 1</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-side" style="background:var(--violet)"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M3</div>
+            <div class="mod-status status-done">Implemented</div>
+          </div>
+          <div class="mod-name">Behaviour Classification</div>
+          <div class="mod-phase">Phase 1</div>
+        </div>
+      </div>
+
+      <div class="mod-hex-grid">
+        <div class="mod-card">
+          <div class="mod-side" style="background:var(--amber)"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M4</div>
+            <div class="mod-status status-plan">Planned</div>
+          </div>
+          <div class="mod-name">Face Recognition</div>
+          <div class="mod-phase">Phase 2</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-side" style="background:var(--amber)"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M5</div>
+            <div class="mod-status status-plan">Planned</div>
+          </div>
+          <div class="mod-name">Backend + Cloud</div>
+          <div class="mod-phase">Phase 2</div>
+        </div>
+        <div class="mod-card">
+          <div class="mod-side" style="background:var(--amber)"></div>
+          <div class="mod-top">
+            <div class="mod-id-badge">M6</div>
+            <div class="mod-status status-plan">Planned</div>
+          </div>
+          <div class="mod-name">Dashboard + Analytics</div>
+          <div class="mod-phase">Phase 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 06 MODULE 1 INTRO ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">06</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Module 1</div>
+    <div class="title">Multi-Camera Ingestion &amp; AI Vision</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="m1-purpose">
+      <div>
+        <div class="h-inline">Purpose</div>
+        <p class="p-lg">Acquire raw video from heterogeneous sources — laptop webcams, IP cameras over RTSP, and pre-recorded video files — and deliver clean, timestamped frames to the downstream AI pipeline without blocking.</p>
+
+        <div class="h-inline" style="margin-top: 40px">Responsibilities</div>
+        <div class="resp-item"><div class="b"></div><p>Manage the lifecycle of N camera streams</p></div>
+        <div class="resp-item"><div class="b"></div><p>Threaded capture to avoid blocking the AI loop</p></div>
+        <div class="resp-item"><div class="b"></div><p>Bounded queue with drop-oldest policy</p></div>
+        <div class="resp-item"><div class="b"></div><p>Frame preprocessing (crop, colour, resize)</p></div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; justify-content:center;">
+        <div class="stat-strip">
+          <div class="stat-big">3</div>
+          <div class="stat-info">
+            <h4>Source Types</h4>
+            <p>Webcam · RTSP · File</p>
+          </div>
+        </div>
+        <div class="stat-strip">
+          <div class="stat-big">N</div>
+          <div class="stat-info">
+            <h4>Cameras in Parallel</h4>
+            <p>Thread-per-camera capture</p>
+          </div>
+        </div>
+        <div class="stat-strip">
+          <div class="stat-big">1</div>
+          <div class="stat-info">
+            <h4>Buffer Depth</h4>
+            <p>Drop-oldest policy</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 07 M1 ARCHITECTURE (SVG) ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">07</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">M1 Architecture</div>
+    <div class="title">M1 Pipeline Architecture</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="arch-wrap">
+      <div class="arch-svg-holder">
+        <svg width="480" height="650" viewBox="0 0 480 650" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+            </marker>
+          </defs>
+          <!-- Stage 1 -->
+          <rect x="80" y="20" width="320" height="70" rx="12" fill="#14b8a6"/>
+          <text x="240" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">Camera Sources</text>
+          <line x1="240" y1="90" x2="240" y2="130" stroke="#64748b" stroke-width="3" marker-end="url(#ar)"/>
+
+          <rect x="80" y="130" width="320" height="70" rx="12" fill="#1e40af"/>
+          <text x="240" y="172" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">Frame Capture</text>
+          <line x1="240" y1="200" x2="240" y2="240" stroke="#64748b" stroke-width="3" marker-end="url(#ar)"/>
+
+          <rect x="80" y="240" width="320" height="70" rx="12" fill="#0891b2"/>
+          <text x="240" y="282" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">Preprocessing</text>
+          <line x1="240" y1="310" x2="240" y2="350" stroke="#64748b" stroke-width="3" marker-end="url(#ar)"/>
+
+          <rect x="80" y="350" width="320" height="70" rx="12" fill="#7c3aed"/>
+          <text x="240" y="392" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">Frame Buffer / Queue</text>
+          <line x1="240" y1="420" x2="240" y2="460" stroke="#64748b" stroke-width="3" marker-end="url(#ar)"/>
+
+          <rect x="80" y="460" width="320" height="70" rx="12" fill="#d97706"/>
+          <text x="240" y="502" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">AI Vision Pipeline</text>
+          <line x1="240" y1="530" x2="240" y2="570" stroke="#64748b" stroke-width="3" marker-end="url(#ar)"/>
+
+          <rect x="80" y="570" width="320" height="70" rx="12" fill="#059669"/>
+          <text x="240" y="612" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="800" fill="white">Processed Output</text>
+        </svg>
+      </div>
+
+      <div>
+        <div class="arch-detail-title">Component Details</div>
+        <div class="arch-row"><strong>Camera Sources</strong><span>Webcam index, RTSP URL, or video file path</span></div>
+        <div class="arch-row"><strong>Frame Capture</strong><span>cv2.VideoCapture running in daemon thread</span></div>
+        <div class="arch-row"><strong>Preprocessing</strong><span>Crop with padding, BGR→RGB, letterbox resize</span></div>
+        <div class="arch-row"><strong>Frame Buffer</strong><span>queue.Queue with drop-oldest policy on full</span></div>
+        <div class="arch-row"><strong>AI Vision</strong><span>Handoff to Module 2 for detection and tracking</span></div>
+        <div class="arch-row"><strong>Processed Output</strong><span>Annotated frames and behaviour events</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 08 M1 IMPLEMENTATION ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">08</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Implementation</div>
+    <div class="title">M1 Implementation</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="impl-2col">
+      <div>
+        <div class="h-inline">Implemented Components</div>
+        <div class="impl-row"><strong>CameraSource</strong><span>Thread-per-camera capture wrapping cv2.VideoCapture</span></div>
+        <div class="impl-row"><strong>CameraManager</strong><span>Manages N sources, round-robin frame retrieval</span></div>
+        <div class="impl-row"><strong>Preprocessor</strong><span>crop_bbox, preprocess_for_pose, letterbox</span></div>
+        <div class="impl-row"><strong>FramePacket</strong><span>camera_id, frame, timestamp, frame_number</span></div>
+        <div class="impl-row"><strong>AppConfig</strong><span>Pydantic config with YAML loader</span></div>
+      </div>
+
+      <div>
+        <div class="h-inline">Technology Stack</div>
+        <div class="tech-stack-grid">
+          <div class="tech-pill">Python 3.11</div>
+          <div class="tech-pill">OpenCV 4.8+</div>
+          <div class="tech-pill">FFmpeg</div>
+          <div class="tech-pill">Pydantic 2.x</div>
+          <div class="tech-pill">PyYAML</div>
+          <div class="tech-pill">threading</div>
+          <div class="tech-pill" style="grid-column: span 2">queue.Queue</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 09 M1 DEMO ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">09</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Working Demo</div>
+    <div class="title">M1 Working Demo</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="demo-4">
+      <div class="demo-slot">
+        <span class="frame-corner fc-tl"></span>
+        <span class="frame-corner fc-tr"></span>
+        <span class="frame-corner fc-bl"></span>
+        <span class="frame-corner fc-br"></span>
+        <h4>Insert M1 Demo Screenshot</h4>
+        <p>Live webcam feed in web dashboard</p>
+      </div>
+      <div class="demo-slot">
+        <span class="frame-corner fc-tl"></span>
+        <span class="frame-corner fc-tr"></span>
+        <span class="frame-corner fc-bl"></span>
+        <span class="frame-corner fc-br"></span>
+        <h4>Insert Multi-Camera Test</h4>
+        <p>Two or more sources processed in parallel</p>
+      </div>
+      <div class="demo-slot">
+        <span class="frame-corner fc-tl"></span>
+        <span class="frame-corner fc-tr"></span>
+        <span class="frame-corner fc-bl"></span>
+        <span class="frame-corner fc-br"></span>
+        <h4>Insert Camera / Video Input</h4>
+        <p>Source configuration and connection</p>
+      </div>
+      <div class="demo-slot">
+        <span class="frame-corner fc-tl"></span>
+        <span class="frame-corner fc-tr"></span>
+        <span class="frame-corner fc-bl"></span>
+        <span class="frame-corner fc-br"></span>
+        <h4>Insert FPS / Performance Result</h4>
+        <p>Benchmark output with measured FPS</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 10 LIMITATIONS ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">10</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Limitations &amp; Next Steps</div>
+    <div class="title">Current Limitations &amp; Next Steps</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="split-2">
+      <div class="split-col">
+        <div class="split-head red">Current Limitations</div>
+        <div class="split-body">
+          <div class="split-item r"><div class="m">—</div><p>No frame synchronisation across cameras</p></div>
+          <div class="split-item r"><div class="m">—</div><p>No auto-reconnect for RTSP on connection loss</p></div>
+          <div class="split-item r"><div class="m">—</div><p>CPU-only decoding (no hardware acceleration)</p></div>
+          <div class="split-item r"><div class="m">—</div><p>Frame-drop rate not exposed as a metric</p></div>
+          <div class="split-item r"><div class="m">—</div><p>No cross-camera identity association</p></div>
+        </div>
+      </div>
+      <div class="split-col">
+        <div class="split-head green">Planned Next Steps</div>
+        <div class="split-body">
+          <div class="split-item g"><div class="m">▸</div><p>RTSP auto-reconnect with exponential backoff</p></div>
+          <div class="split-item g"><div class="m">▸</div><p>Expose frame-drop rate on web dashboard</p></div>
+          <div class="split-item g"><div class="m">▸</div><p>Optional GPU-accelerated decoding (NVDEC)</p></div>
+          <div class="split-item g"><div class="m">▸</div><p>Frame-timestamp synchronisation across cameras</p></div>
+          <div class="split-item g"><div class="m">▸</div><p>Adaptive frame-rate based on pipeline load</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 11 MODULE 2 ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">11</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Module 2</div>
+    <div class="title">Detection &amp; Tracking — Context</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <p class="p-lg" style="margin-bottom:20px">The next stage of the pipeline. M2 consumes frames from M1 and returns tracked person detections with persistent identity IDs, then hands off to M3 for behaviour analysis.</p>
+
+    <div class="m2-flow">
+      <div class="m2-node" style="border-color:#14b8a6">
+        <div class="lbl" style="color:#14b8a6">M1</div>
+        <div class="desc">FramePacket</div>
+      </div>
+      <div class="m2-arrow">▶</div>
+      <div class="m2-node" style="border-color:var(--primary)">
+        <div class="lbl" style="color:var(--primary)">M2</div>
+        <div class="desc">Detections + Track IDs</div>
+      </div>
+      <div class="m2-arrow">▶</div>
+      <div class="m2-node" style="border-color:var(--violet)">
+        <div class="lbl" style="color:var(--violet)">M3</div>
+        <div class="desc">BehaviourEvent</div>
+      </div>
+    </div>
+
+    <div class="m2-body">
+      <div>
+        <div class="callout">
+          <div class="k">Note</div>
+          <p>Module 2 is implemented and functional. Detailed methodology, evaluation, and results are covered in a separate module-specific presentation.</p>
+        </div>
+      </div>
+      <div class="tech-list">
+        <div class="tech-list-h">Chosen Technologies</div>
+        <div class="tech-list-item">
+          <h4>YOLOv8n</h4>
+          <p>3.2M params, person class filter</p>
+        </div>
+        <div class="tech-list-item">
+          <h4>ByteTrack</h4>
+          <p>Byte-level detection association</p>
+        </div>
+        <div class="tech-list-item">
+          <h4>supervision</h4>
+          <p>Standard sv.Detections API</p>
+        </div>
+        <div class="tech-list-item">
+          <h4>TrackStore</h4>
+          <p>Per-track spatial history</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 12 SOFTWARE ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">12</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Software Requirements</div>
+    <div class="title">Software Requirements</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="sw-2col">
+      <div>
+        <div class="h-inline">Runtime Environment</div>
+        <table class="env-tbl">
+          <tr><td>Operating System</td><td>Windows / Linux / macOS</td></tr>
+          <tr><td>Python Version</td><td>3.10 – 3.12  (3.11 recommended)</td></tr>
+          <tr><td>Environment</td><td>Conda  or  venv</td></tr>
+          <tr><td>Hardware</td><td>CPU baseline · GPU optional</td></tr>
+          <tr><td>Memory</td><td>≥ 4 GB RAM (single camera)</td></tr>
+          <tr><td>Storage</td><td>~2 GB for models + dependencies</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="h-inline">Core Dependencies</div>
+        <div class="dep-grid-4">
+          <div class="dep-card"><div><div class="name">opencv-python</div><div class="ver">&gt;=4.8</div></div><div class="dep-tag tag-m1">M1</div></div>
+          <div class="dep-card"><div><div class="name">numpy</div><div class="ver">&gt;=1.24</div></div><div class="dep-tag tag-core">core</div></div>
+          <div class="dep-card"><div><div class="name">ultralytics</div><div class="ver">&gt;=8.3</div></div><div class="dep-tag tag-m2">M2</div></div>
+          <div class="dep-card"><div><div class="name">supervision</div><div class="ver">&gt;=0.25</div></div><div class="dep-tag tag-m2">M2</div></div>
+          <div class="dep-card"><div><div class="name">mediapipe</div><div class="ver">&gt;=0.10</div></div><div class="dep-tag tag-m3">M3</div></div>
+          <div class="dep-card"><div><div class="name">torch</div><div class="ver">&gt;=2.1</div></div><div class="dep-tag tag-ml">ML</div></div>
+          <div class="dep-card"><div><div class="name">pydantic</div><div class="ver">&gt;=2.0</div></div><div class="dep-tag tag-cfg">cfg</div></div>
+          <div class="dep-card"><div><div class="name">flask</div><div class="ver">&gt;=3.0</div></div><div class="dep-tag tag-web">web</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 13 FUTURE WORK ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">13</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">Future Work</div>
+    <div class="title">Future Work</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="tl-wrap">
+      <div class="tl-line">
+        <div class="tl-item">
+          <div class="tl-pill" style="background:var(--emerald)">Now</div>
+          <div class="tl-node" style="background:var(--emerald)">1</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-pill" style="background:var(--primary)">Next</div>
+          <div class="tl-node" style="background:var(--primary)">2</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-pill" style="background:var(--violet)">Phase 2</div>
+          <div class="tl-node" style="background:var(--violet)">3</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-pill" style="background:var(--amber)">Phase 2</div>
+          <div class="tl-node" style="background:var(--amber)">4</div>
+        </div>
+      </div>
+
+      <div class="tl-cards">
+        <div class="tl-card">
+          <h4 style="color:var(--emerald)">Phase 1</h4>
+          <div class="sub">M1 + M2 + M3</div>
+          <p>Ingestion, tracking, and rule-based behaviour classification working end-to-end.</p>
+        </div>
+        <div class="tl-card">
+          <h4 style="color:var(--primary)">M4</h4>
+          <div class="sub">Face Recognition</div>
+          <p>FaceNet or DeepFace-based watchlist matching for individuals.</p>
+        </div>
+        <div class="tl-card">
+          <h4 style="color:var(--violet)">M5</h4>
+          <div class="sub">Backend + Cloud</div>
+          <p>FastAPI service, role-based access, Docker-based deployment.</p>
+        </div>
+        <div class="tl-card">
+          <h4 style="color:var(--amber)">M6</h4>
+          <div class="sub">Dashboard + Analytics</div>
+          <p>React UI, mobile alerts, historical search, and reporting.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+<!-- ===================== 14 REFERENCES ===================== -->
+<section class="slide">
+  <div class="corner"><span class="corner-num">14</span><span class="corner-line"></span></div>
+  <div class="header">
+    <div class="eyebrow">References</div>
+    <div class="title">References</div>
+    <div class="rule"></div>
+  </div>
+  <div class="content">
+    <div class="refs">
+      <div class="ref-row"><div class="ref-n">1.</div><p>Bradski, G. (2000). The OpenCV Library. <em>Dr. Dobb's Journal of Software Tools</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">2.</div><p>IETF (2016). Real Time Streaming Protocol 2.0 (RFC 7826).</p></div>
+      <div class="ref-row"><div class="ref-n">3.</div><p>Jocher, G. et al. (2023). Ultralytics YOLOv8. GitHub repository.</p></div>
+      <div class="ref-row"><div class="ref-n">4.</div><p>Zhang, Y. et al. (2022). ByteTrack: Multi-Object Tracking by Associating Every Detection Box. <em>ECCV 2022</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">5.</div><p>Bewley, A. et al. (2016). Simple Online and Realtime Tracking (SORT). <em>IEEE ICIP 2016</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">6.</div><p>Wojke, N. et al. (2017). Simple Online and Realtime Tracking with a Deep Association Metric. <em>IEEE ICIP 2017</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">7.</div><p>Bazarevsky, V. et al. (2020). BlazePose: On-device Real-time Body Pose Tracking. <em>CVPR 2020 Workshop</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">8.</div><p>Yan, S. et al. (2018). Spatial-Temporal Graph Convolutional Networks for Skeleton-Based Action Recognition. <em>AAAI 2018</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">9.</div><p>Sultani, W. et al. (2018). Real-World Anomaly Detection in Surveillance Videos. <em>CVPR 2018</em>.</p></div>
+      <div class="ref-row"><div class="ref-n">10.</div><p>Roboflow (2023). supervision: reusable computer vision tools. GitHub repository.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Smart CCTV AI  ·  Module 1 Progress</span><span class="pn"></span></div>
+</section>
+
+</div>
+
+<!-- Controls (hidden in presentation mode) -->
+<div class="controls" id="controls">
+  <button id="prev" title="Previous (←)">◀</button>
+  <div class="counter"><span id="cur">1</span> / <span id="total">15</span></div>
+  <button id="next" title="Next (→)">▶</button>
+  <button id="fs" title="Fullscreen (F)">⛶</button>
+  <button id="present" title="Toggle presentation mode (H)">👁</button>
+</div>
+
+<div class="hint" id="hint">← →  navigate  &nbsp;·&nbsp;  F  full-screen  &nbsp;·&nbsp;  H  hide UI  &nbsp;·&nbsp;  P  print</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+document.getElementById('total').textContent = total;
+let current = 0;
+
+function show(i) {
+  current = Math.max(0, Math.min(total - 1, i));
+  slides.forEach((s, k) => s.classList.toggle('active', k === current));
+  document.getElementById('cur').textContent = current + 1;
+  document.querySelectorAll('.pn').forEach((el, k) => {
+    el.textContent = (k + 1) + ' / ' + (total - 1);
+  });
+  scale();
+}
+
+function scale() {
+  const s = slides[current];
+  if (!s) return;
+  const sx = window.innerWidth / 1920;
+  const sy = window.innerHeight / 1080;
+  const k = Math.min(sx, sy);
+  s.style.transform = 'scale(' + k + ')';
+}
+
+document.getElementById('next').onclick = () => show(current + 1);
+document.getElementById('prev').onclick = () => show(current - 1);
+document.getElementById('fs').onclick = () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+};
+
+let uiHidden = false;
+function togglePresent() {
+  uiHidden = !uiHidden;
+  document.getElementById('controls').classList.toggle('hidden', uiHidden);
+  document.getElementById('hint').classList.toggle('hidden', uiHidden);
+}
+document.getElementById('present').onclick = togglePresent;
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(current + 1); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(current - 1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(total - 1);
+  else if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+  else if (e.key === 'h' || e.key === 'H') togglePresent();
+  else if (e.key === 'p' || e.key === 'P') { e.preventDefault(); window.print(); }
+});
+
+window.addEventListener('resize', scale);
+window.addEventListener('load', () => show(0));
+</script>
+</body>
+</html>

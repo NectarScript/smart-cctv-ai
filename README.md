@@ -1,129 +1,59 @@
 # Smart CCTV AI
 
-Intelligent multi-camera surveillance platform with real-time person detection, behaviour analysis, and alert generation.
+Agentic, privacy-aware, multi-camera CCTV platform. Detects suspicious
+behaviour, verifies with a local vision-language model, pushes a Telegram
+alert with clip + plain-English summary, and answers "what happened at
+Gate 2 in the last hour?" on demand.
 
-## Phase 1 — Core AI Pipeline (M1 + M2 + M3)
+Final-year college project · 5-day rebuild · 100% local, no paid APIs.
 
-### Architecture
+## Credits / prior art
+Inspiration only, re-implemented from scratch in our own code:
+- **clearcam** (GPL-3.0): NVR, draw-a-zone alerts, AI notification summaries.
+  https://github.com/roryclear/clearcam
+- **DeepCamera** (MIT): pluggable skills, hardware auto-detect, chat agent.
+  https://github.com/SharpAI/DeepCamera
 
+## Status — Milestone 1 (Day 1)
+- Multi-camera manager (file / webcam / RTSP / IP Webcam), threaded, auto-reconnect
+- YOLO11n detection + ByteTrack via Ultralytics
+- Polygon zones; `intrusion` + `loitering` behaviour plugins
+- SQLite event log with snapshot per event
+- FastAPI backend: `/stream/{cam}` (MJPEG), `/cameras`, `/events`, `/healthz`
+- React + Vite + Tailwind dashboard (dark): live feed grid + event list
+- `setup.bat` / `update.bat` / `run.bat` / `doctor.bat` for the GPU PC
+
+## Quick start (GPU PC — Windows 11, RTX 4050, Python 3.11)
 ```
-Camera Sources → M1 Ingestion → M2 Detection+Tracking → M3 Behaviour Classification → Events
-     ↓                ↓                  ↓                        ↓
-  webcam/RTSP     Frame Queue     YOLOv8n + ByteTrack    MediaPipe Pose + Rules
-  /video file     (threaded)       Person tracking        Normal/Suspicious/Critical
-```
-
-### Modules
-
-| Module | Responsibility | Key Tech |
-|--------|---------------|----------|
-| M1 — Ingestion | Multi-camera capture, frame queuing | OpenCV, threading |
-| M2 — Detection | Person detection + persistent tracking | YOLOv8n, ByteTrack (supervision) |
-| M3 — Classification | Pose-based behaviour analysis | MediaPipe, rule-based heuristics |
-
-### Detected Events
-
-| Event | Reliability | Method |
-|-------|------------|--------|
-| Loitering | HIGH | Centroid displacement over time |
-| Sudden Running | HIGH | Velocity spike detection |
-| Fighting | MEDIUM | Proximity + rapid limb movement |
-| Crowd Surge | MEDIUM | Track density threshold |
-| Theft Posture | LOW (experimental) | Crouching + reaching heuristic |
-
-## Quick Start
-
-### Prerequisites
-
-- Python 3.10–3.12 (3.11 recommended)
-- Conda or venv
-- Webcam (optional — works with video files too)
-
-### Option A: Conda (recommended)
-
-```bash
-conda create -n smartcctv python=3.11 -y
-conda activate smartcctv
-pip install -r requirements.txt
+git clone <this repo>
+cd smart-cctv-ai
+setup.bat          # one-time: venv, torch(cuda), deps, YOLO weights, dashboard build
+run.bat            # starts backend + pipeline on http://<pc-ip>:8000
+doctor.bat         # pass/fail health report → logs/doctor.json
 ```
 
-### Option B: venv
+The dev PC (no GPU) only writes code; nothing is installed or run there.
+See `HANDOFF.md` for the full remote workflow.
 
-```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/macOS
-source venv/bin/activate
-pip install -r requirements.txt
+## Layout
+```
+smart_cctv_ai/         # Python package
+  camera/ detect/ behaviours/ alerts/ api/
+  pipeline.py schema.py config.py db.py zones.py
+frontend/              # React + Vite + Tailwind dashboard
+scripts/doctor.py      # health report
+config.yaml            # cameras, zones, thresholds (edit this)
+.env.example           # secrets template (TELEGRAM_BOT_TOKEN)
+samples/               # test clips (drop your own)
+data/clips/            # event snapshots + clips (runtime)
+logs/                  # loguru output + doctor.json
 ```
 
-### Verify Installation
+## Event schema (single source of truth)
+Defined once in `smart_cctv_ai/schema.py`:
+`id, camera_id, type, severity, track_ids, zone, start_ts, end_ts,
+snapshot, clip, vlm_verdict, vlm_summary, meta`.
 
-```bash
-# Check all dependencies load
-python -c "import cv2, ultralytics, supervision, mediapipe, torch; print('All OK')"
-
-# Run test suite (30 tests, no GPU needed)
-pytest tests/ -v
-```
-
-## Usage
-
-### Web Dashboard (recommended)
-```bash
-python scripts/web_dashboard.py --source 0
-```
-Open http://localhost:8080 in your browser. Live video feed with detection overlay, event log, and performance metrics.
-
-### Single camera (OpenCV window)
-```bash
-python scripts/demo_single.py --source 0
-```
-
-### Video file
-```bash
-python scripts/demo_video.py --input path/to/video.mp4 --show
-# Save annotated output:
-python scripts/demo_video.py --input video.mp4 --output annotated.mp4
-```
-
-### Multi-camera
-```bash
-python scripts/demo_multi.py --sources 0 1 video.mp4
-```
-
-### Benchmark
-```bash
-python scripts/benchmark.py --input video.mp4 --frames 300
-```
-
-Press `q` to quit OpenCV demo windows.
-
-### Tests
-```bash
-pytest tests/ -v
-```
-
-## Configuration
-
-Edit `config/default.yaml` to adjust detection thresholds, tracking parameters, and behaviour rules.
-
-## Project Structure
-
-```
-src/
-├── core/           # Config, types, constants, logging, timer
-├── ingestion/      # M1: CameraSource, CameraManager, preprocessor
-├── detection/      # M2: PersonDetector, Tracker, TrackStore
-├── behaviour/      # M3: PoseEstimator, KeypointBuffer, RuleBasedClassifier
-├── pipeline/       # Orchestrator (M1→M2→M3)
-├── visualization/  # Renderer, Display
-└── web/            # Flask web dashboard
-```
-
-## Planned (Phase 2+)
-
-- M4: Face recognition (FaceNet/DeepFace)
-- M5: Backend API, RBAC, cloud deployment
-- M6: Web dashboard, analytics, mobile alerts
+## Licence
+Project source: AGPL-3.0 (Ultralytics dependency). Keep the repo public at
+submission, or declare the licence.
