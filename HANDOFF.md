@@ -2,8 +2,16 @@
 
 ## Who runs what
 - **Dev PC** (no GPU): write code with Claude, `git push`. No pip/npm here.
-- **GPU PC** (Windows 11, RTX 4050 6 GB, 16 GB RAM, Python 3.11): installs
-  and runs everything via the four `.bat` scripts below.
+- **GPU PC** (Windows 11, NVIDIA RTX 50/40-series, 8+ GB VRAM, 16+ GB RAM,
+  Python 3.11): installs and runs everything via the four `.bat` scripts
+  below. Confirmed on: HP Victus 15-fb3185AX — Ryzen 7 260 · 24 GB RAM ·
+  RTX 5050 Laptop 8 GB · Win 11 Home.
+
+`setup.bat` auto-detects the GPU generation and picks the right CUDA
+wheel:
+- RTX 50-series (Blackwell, sm_120) → `torch 2.7.0 + cu128`
+- RTX 40 / 30 / 20 (Ada / Ampere / Turing) → `torch 2.5.1 + cu121`
+- No NVIDIA GPU → fallback to CPU (set `app.device: "cpu"` in `config.yaml`)
 
 ## One-time setup on the GPU PC (Day 1, ~1 hour)
 Install first (user must do these by hand):

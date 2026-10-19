@@ -25,7 +25,7 @@ Inspiration only, re-implemented from scratch in our own code:
 - React + Vite + Tailwind dashboard (dark): live feed grid + event list
 - `setup.bat` / `update.bat` / `run.bat` / `doctor.bat` for the GPU PC
 
-## Quick start (GPU PC — Windows 11, RTX 4050, Python 3.11)
+## Quick start (GPU PC — Windows 11, NVIDIA RTX 50-series or 40-series, Python 3.11)
 ```
 git clone <this repo>
 cd smart-cctv-ai

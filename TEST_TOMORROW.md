@@ -1,7 +1,15 @@
-# Smart CCTV AI — One-page test guide (friend's PC)
+# Smart CCTV AI — One-page test guide (GPU PC)
 
-**Target branch for tomorrow:** `m3/day3` (contains everything from M1 + M2 + M3).
-Tagged as `v0.3`. If anything breaks, the fallback is `m1/fresh-rebuild` (minimal M1).
+**Target branch:** `m3/day3` (contains everything from M1 + M2 + M3). Tagged `v0.3`.
+Fallback: `m1/fresh-rebuild`.
+
+**Tested on:** HP Victus 15-fb3185AX — AMD Ryzen 7 260 · 24 GB RAM ·
+NVIDIA RTX 5050 Laptop 8 GB (Blackwell) · Windows 11 Home · Python 3.11.9.
+
+**Any other NVIDIA GPU?** `setup.bat` auto-detects:
+- RTX 50-series → torch 2.7.0 + cu128
+- RTX 40 / 30 / 20 → torch 2.5.1 + cu121
+- No NVIDIA GPU → set `app.device: "cpu"` in `config.yaml`, no reinstall needed.
 
 ## 0. Prereqs (install by hand, one time, ~30 min)
 Install these first with their official installers, then **restart the terminal**:
@@ -104,6 +112,15 @@ That's it — I'll do the fixing from the logs.
 **`nvidia-smi` says CUDA 12.x, but `setup.bat` fails on torch install.**
 Try CUDA 11.8 wheels instead. Edit `setup.bat` line that reads
 `--index-url https://download.pytorch.org/whl/cu121` → `cu118`, and rerun.
+
+**`CUDA error: no kernel image is available for execution on the device`.**
+Your GPU gen isn't matched by the installed torch build. Likely a new RTX
+50-series. Fix:
+```powershell
+Remove-Item -Recurse -Force .venv
+.\setup.bat
+```
+Latest `setup.bat` auto-detects RTX 50 and installs the cu128 wheels.
 
 **`run.bat` crashes with "address already in use".**
 Port 8000 is taken. Edit `config.yaml` → `app.port: 8001` (or any free port).
