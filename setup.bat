@@ -58,8 +58,9 @@ if not exist "models\yolo11n-pose.pt" (
     || (echo [WARN] yolo11n-pose auto-download failed; ultralytics will fetch at first run)
 )
 
-echo [5/6] checking Ollama + VLM (M2 - skip failures)...
-where ollama >nul 2>&1 && (ollama pull qwen2.5vl:3b 2>nul) || echo [WARN] ollama not found; M2 features will stay off
+echo [5/6] checking Ollama (optional; no auto-pull - avoids Windows handle hang)...
+where ollama >nul 2>&1 && (echo [i] ollama on PATH - run 'ollama pull qwen2.5vl:3b' later for VLM/chat) ^
+  || echo [WARN] ollama not found; VLM + chat agent will stay off
 
 echo [6/6] building dashboard...
 pushd frontend

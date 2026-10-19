@@ -55,8 +55,8 @@ alerts:
     min_severity: "suspicious"  # "normal" | "suspicious" | "critical"
 
 vlm:
-  enabled: true             # requires ollama running + the model below pulled
+  enabled: false            # flip to true after you confirm ollama runs
   model: "qwen2.5vl:7b"     # 6 GB VRAM; swap to qwen2.5vl:3b (~3.2 GB) if OOM
   ollama_url: "http://127.0.0.1:11434"
-  timeout_seconds: 20       # 7b is slower; drop to 10 if using 3b
+  timeout_seconds: 20
   verify_min_severity: "suspicious"
