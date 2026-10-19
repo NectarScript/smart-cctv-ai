@@ -40,13 +40,22 @@ recorder:
 
 cameras:
   - id: "cam1"
-    name: "Demo (sample video)"
-    source: "samples/intrusion.mp4"
+    name: "Laptop webcam"
+    source: "0"
     fps: 15
     zones:
-      - name: "restricted_A"
-        polygon: [[100, 100], [540, 100], [540, 380], [100, 380]]
-        rules: ["intrusion", "loitering", "crowd_surge"]
+      - name: "zone_A"
+        polygon: [[200, 120], [500, 120], [500, 400], [200, 400]]
+        rules: ["intrusion", "loitering", "running"]
+
+  - id: "cam2"
+    name: "Phone cam"
+    source: "http://10.82.164.160:8080/video"
+    fps: 15
+    zones:
+      - name: "zone_B"
+        polygon: [[150, 100], [550, 100], [550, 420], [150, 420]]
+        rules: ["intrusion", "loitering", "crowd_surge", "unattended_object"]
 
 alerts:
   telegram:
