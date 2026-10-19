@@ -4,32 +4,40 @@ cd /d "%~dp0"
 
 echo === Smart CCTV AI :: setup ===
 
-where python >nul 2>&1 || (echo [ERR] python not on PATH ^(install Python 3.11^)& exit /b 1)
-
-rem --- Python 3.11 guard ---------------------------------------------------
-rem Torch cu121 wheels for 2.5.1 only exist for Python 3.9-3.12. The plan
-rem pins 3.11. Fail fast with a clear message instead of a cryptic pip error.
-for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYVER=%%v
-echo [i] detected python %PYVER%
-echo %PYVER% | findstr /r "^3\.11\." >nul
-if errorlevel 1 (
-  echo [ERR] Python 3.11.x required, found %PYVER%.
-  echo       1^) install Python 3.11.9: https://www.python.org/downloads/release/python-3119/
-  echo       2^) rmdir /s /q .venv
-  echo       3^) py -3.11 -m venv .venv
-  echo       4^) run setup.bat again
-  exit /b 1
-)
-rem ------------------------------------------------------------------------
 where node   >nul 2>&1 || (echo [ERR] node not on PATH ^(install Node 20 LTS^)   & exit /b 1)
 where npm    >nul 2>&1 || (echo [ERR] npm not on PATH                              & exit /b 1)
 where git    >nul 2>&1 || (echo [ERR] git not on PATH                              & exit /b 1)
 
-echo [1/6] creating venv...
+echo [1/6] creating venv (python 3.11)...
 if not exist ".venv" (
-  python -m venv .venv || (echo [ERR] venv create failed & exit /b 1)
+  where py >nul 2>&1 && (
+    py -3.11 -m venv .venv
+  ) || (
+    where python >nul 2>&1 || (echo [ERR] no python on PATH ^& exit /b 1)
+    python -m venv .venv
+  )
+  if not exist ".venv\Scripts\activate.bat" (
+    echo [ERR] venv create failed
+    echo       install Python 3.11.9: https://www.python.org/downloads/release/python-3119/
+    exit /b 1
+  )
 )
 call .venv\Scripts\activate.bat || (echo [ERR] venv activate failed & exit /b 1)
+
+rem --- venv python 3.11 guard ---------------------------------------------
+rem Torch cu121 wheels for 2.5.1 only exist for Python 3.9-3.12. Plan pins
+rem 3.11. Fail fast if the venv was built with the wrong interpreter.
+for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYVER=%%v
+echo [i] venv python %PYVER%
+echo %PYVER% | findstr /r "^3\.11\." >nul
+if errorlevel 1 (
+  echo [ERR] venv was built with Python %PYVER%, need 3.11.x
+  echo       install Python 3.11.9: https://www.python.org/downloads/release/python-3119/
+  echo       then:  rmdir /s /q .venv  ^&^&  py -3.11 -m venv .venv  ^&^&  setup.bat
+  exit /b 1
+)
+rem ------------------------------------------------------------------------
+
 python -m pip install --upgrade pip wheel
 
 echo [2/6] installing PyTorch CUDA 12.1 (fits RTX 4050)...
