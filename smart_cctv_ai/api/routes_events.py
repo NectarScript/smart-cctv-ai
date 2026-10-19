@@ -38,3 +38,15 @@ def snapshot(event_id: int):
     if not p.exists():
         raise HTTPException(404, "snapshot file missing")
     return FileResponse(p, media_type="image/jpeg")
+
+
+@router.get("/{event_id}/clip")
+def clip(event_id: int):
+    with Session(db.engine()) as s:
+        ev = s.get(Event, event_id)
+        if ev is None or not ev.clip:
+            raise HTTPException(404, "clip not ready")
+    p = Path(ev.clip)
+    if not p.exists():
+        raise HTTPException(404, "clip file missing")
+    return FileResponse(p, media_type="video/mp4")

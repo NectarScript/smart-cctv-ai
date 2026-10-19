@@ -56,8 +56,12 @@ def c_ultralytics():
 
 
 def c_weights():
-    p = ROOT / "models" / "yolo11n.pt"
-    return p.exists(), (str(p) if p.exists() else "missing (ultralytics will fetch at run)")
+    det = ROOT / "models" / "yolo11n.pt"
+    pose = ROOT / "models" / "yolo11n-pose.pt"
+    parts = []
+    parts.append("det=OK" if det.exists() else "det=MISSING")
+    parts.append("pose=OK" if pose.exists() else "pose=MISSING")
+    return (det.exists() and pose.exists()), ", ".join(parts)
 
 
 def c_opencv():

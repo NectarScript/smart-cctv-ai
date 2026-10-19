@@ -28,8 +28,18 @@ const json = <T,>(r: Response): Promise<T> => {
   return r.json();
 };
 
+export interface Health {
+  ok: boolean;
+  cameras?: Record<string, boolean>;
+  telegram?: boolean;
+  vlm?: boolean;
+  recorder?: boolean;
+  pose?: boolean;
+}
+
 export const api = {
   cameras: () => fetch("/cameras").then((r) => json<Camera[]>(r)),
   events: (limit = 50) =>
     fetch(`/events?limit=${limit}`).then((r) => json<EventRow[]>(r)),
+  health: () => fetch("/healthz").then((r) => json<Health>(r)),
 };

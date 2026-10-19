@@ -9,25 +9,35 @@ app:
   log_level: "INFO"
 
 detection:
-  model: "yolo11n.pt"       # downloaded by setup.bat into ./models
+  model: "yolo11n.pt"
   conf: 0.35
   iou: 0.5
   imgsz: 640
-  tracker: "bytetrack.yaml" # ultralytics builtin
-  person_class: 0           # COCO: person
+  tracker: "bytetrack.yaml"
+  person_class: 0
 
 behaviour:
-  cooldown_seconds: 20      # minimum gap between same-type events on same track
+  cooldown_seconds: 20
+  intrusion:         { enabled: true }
+  loitering:         { enabled: true, dwell_seconds: 10 }
+  running:           { enabled: true, min_speed_hpersec: 2.5, window_seconds: 1.0 }
+  fall:              { enabled: true, horizontal_angle_deg: 35, down_seconds: 1.5 }
+  fighting:          { enabled: true, min_overlap_iou: 0.1, min_motion_px: 25 }
+  crowd_surge:       { enabled: true, max_people: 5 }
+  unattended_object: { enabled: true, stationary_seconds: 15, abandon_distance_px: 180 }
+  pose:
+    model: "yolo11n-pose.pt"
+    conf: 0.3
+    imgsz: 640
+    every_n_frames: 2
+    min_people_for_pose: 1
 
-  intrusion:
-    enabled: true
+recorder:
+  enabled: true
+  pre_seconds: 4
+  post_seconds: 6
+  fps: 15
 
-  loitering:
-    enabled: true
-    dwell_seconds: 10       # same track inside zone for >= N seconds
-
-# Cameras: source can be a file path (relative to repo root), a webcam index
-# (as string "0"), or an rtsp://... / http://... URL.
 cameras:
   - id: "cam1"
     name: "Demo (sample video)"
@@ -36,14 +46,17 @@ cameras:
     zones:
       - name: "restricted_A"
         polygon: [[100, 100], [540, 100], [540, 380], [100, 380]]
-        rules: ["intrusion", "loitering"]
+        rules: ["intrusion", "loitering", "crowd_surge"]
 
-# M2+ (populated later; keep keys so config.load is stable)
 alerts:
   telegram:
-    enabled: false
-    chat_id: ""             # set in .env, overrides this
+    enabled: true           # fires only when TELEGRAM_BOT_TOKEN + chat_id present
+    chat_id: ""             # or set TELEGRAM_CHAT_ID in .env
+    min_severity: "suspicious"  # "normal" | "suspicious" | "critical"
+
 vlm:
-  enabled: false
+  enabled: true             # requires ollama running + qwen2.5vl:3b pulled
   model: "qwen2.5vl:3b"
   ollama_url: "http://127.0.0.1:11434"
+  timeout_seconds: 10
+  verify_min_severity: "suspicious"

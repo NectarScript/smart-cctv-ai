@@ -27,7 +27,11 @@ echo [4/6] fetching YOLO weights into .\models ...
 if not exist "models" mkdir models
 if not exist "models\yolo11n.pt" (
   python -c "from ultralytics import YOLO; m=YOLO('yolo11n.pt'); import shutil, pathlib; shutil.copy(m.ckpt_path, pathlib.Path('models/yolo11n.pt'))" ^
-    || (echo [WARN] auto-download failed; ultralytics will fetch at first run)
+    || (echo [WARN] yolo11n auto-download failed; ultralytics will fetch at first run)
+)
+if not exist "models\yolo11n-pose.pt" (
+  python -c "from ultralytics import YOLO; m=YOLO('yolo11n-pose.pt'); import shutil, pathlib; shutil.copy(m.ckpt_path, pathlib.Path('models/yolo11n-pose.pt'))" ^
+    || (echo [WARN] yolo11n-pose auto-download failed; ultralytics will fetch at first run)
 )
 
 echo [5/6] checking Ollama + VLM (M2 - skip failures)...
