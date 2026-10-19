@@ -5,6 +5,22 @@ cd /d "%~dp0"
 echo === Smart CCTV AI :: setup ===
 
 where python >nul 2>&1 || (echo [ERR] python not on PATH ^(install Python 3.11^)& exit /b 1)
+
+rem --- Python 3.11 guard ---------------------------------------------------
+rem Torch cu121 wheels for 2.5.1 only exist for Python 3.9-3.12. The plan
+rem pins 3.11. Fail fast with a clear message instead of a cryptic pip error.
+for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYVER=%%v
+echo [i] detected python %PYVER%
+echo %PYVER% | findstr /r "^3\.11\." >nul
+if errorlevel 1 (
+  echo [ERR] Python 3.11.x required, found %PYVER%.
+  echo       1^) install Python 3.11.9: https://www.python.org/downloads/release/python-3119/
+  echo       2^) rmdir /s /q .venv
+  echo       3^) py -3.11 -m venv .venv
+  echo       4^) run setup.bat again
+  exit /b 1
+)
+rem ------------------------------------------------------------------------
 where node   >nul 2>&1 || (echo [ERR] node not on PATH ^(install Node 20 LTS^)   & exit /b 1)
 where npm    >nul 2>&1 || (echo [ERR] npm not on PATH                              & exit /b 1)
 where git    >nul 2>&1 || (echo [ERR] git not on PATH                              & exit /b 1)
