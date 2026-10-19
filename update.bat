@@ -24,7 +24,11 @@ findstr /i "frontend/" .changed.txt >nul && (
   echo [i] frontend changed - rebuilding
   pushd frontend
   if not exist "node_modules" (
-    call npm ci || (popd & exit /b 1)
+    if exist "package-lock.json" (
+      call npm ci || (popd & exit /b 1)
+    ) else (
+      call npm install || (popd & exit /b 1)
+    )
   )
   call npm run build || (popd & exit /b 1)
   popd

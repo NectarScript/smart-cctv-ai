@@ -65,7 +65,11 @@ where ollama >nul 2>&1 && (echo [i] ollama on PATH - run 'ollama pull qwen2.5vl:
 echo [6/6] building dashboard...
 pushd frontend
 if not exist "node_modules" (
-  call npm ci || (echo [ERR] npm ci failed & popd & exit /b 1)
+  if exist "package-lock.json" (
+    call npm ci || (echo [ERR] npm ci failed & popd & exit /b 1)
+  ) else (
+    call npm install || (echo [ERR] npm install failed & popd & exit /b 1)
+  )
 )
 call npm run build || (echo [ERR] npm run build failed & popd & exit /b 1)
 popd
