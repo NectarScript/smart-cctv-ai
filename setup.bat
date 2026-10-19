@@ -40,9 +40,22 @@ rem ------------------------------------------------------------------------
 
 python -m pip install --upgrade pip wheel
 
-echo [2/6] installing PyTorch CUDA 12.1 (fits RTX 4050)...
-pip install --index-url https://download.pytorch.org/whl/cu121 ^
-  torch==2.5.1 torchvision==0.20.1 || (echo [ERR] torch install failed & exit /b 1)
+echo [2/6] installing PyTorch (auto-pick wheel for GPU generation)...
+rem RTX 40-series (Ada, sm_89) works with cu121 + torch 2.5.1.
+rem RTX 50-series (Blackwell, sm_120) needs cu128 + torch 2.7+.
+rem Detect via nvidia-smi; default to cu121 if detection fails.
+set TORCH_IDX=https://download.pytorch.org/whl/cu121
+set TORCH_PKG=torch==2.5.1 torchvision==0.20.1
+for /f "tokens=*" %%g in ('nvidia-smi --query-gpu^=name --format^=csv^,noheader 2^>nul') do set GPU=%%g
+echo [i] detected GPU: %GPU%
+echo %GPU% | findstr /i "RTX 50" >nul
+if not errorlevel 1 (
+  echo [i] Blackwell GPU detected - using cu128 wheels
+  set TORCH_IDX=https://download.pytorch.org/whl/cu128
+  set TORCH_PKG=torch==2.7.0 torchvision==0.22.0
+)
+pip install --index-url %TORCH_IDX% %TORCH_PKG% ^
+  || (echo [ERR] torch install failed & exit /b 1)
 
 echo [3/6] installing python requirements...
 pip install -r requirements.txt || (echo [ERR] pip install failed & exit /b 1)
