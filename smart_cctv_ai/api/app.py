@@ -14,6 +14,10 @@ from ..logging_setup import setup as setup_logging
 from ..pipeline import Pipeline
 from . import stream as stream_mod
 from .routes_events import router as events_router
+from .routes_stats import router as stats_router
+from .routes_search import router as search_router
+from .routes_chat import router as chat_router, configure as chat_configure
+from . import routes_privacy
 
 _pipeline: Pipeline | None = None
 _cfg: Config | None = None
@@ -27,6 +31,8 @@ async def lifespan(app: FastAPI):
     db.init()
     _pipeline = Pipeline(_cfg)
     stream_mod.set_pipeline(_pipeline)
+    routes_privacy.set_pipeline(_pipeline)
+    chat_configure(_cfg)
 
     if _cfg.alerts.telegram.enabled:
         tg = TelegramAlerter(
@@ -63,6 +69,10 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Smart CCTV AI", version="0.1.0", lifespan=lifespan)
     app.include_router(stream_mod.router)
     app.include_router(events_router)
+    app.include_router(stats_router)
+    app.include_router(search_router)
+    app.include_router(chat_router)
+    app.include_router(routes_privacy.router)
 
     @app.get("/healthz")
     def healthz():

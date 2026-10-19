@@ -126,3 +126,36 @@ features are up. A fall / fight event should land in the Events panel with:
 - an italic VLM one-liner above it.
 Your Telegram group gets the snapshot immediately and the clip when it's
 done writing (~6 s later).
+
+## Milestone 3 — Day 3 (branch `m3/day3`)
+On top of M2, this branch adds:
+- **CLIP semantic search** over event snapshots: `GET /search?q=red+backpack`
+  (open_clip ViT-B/32; embeddings cached in `data/clip_index.npz`).
+- **Ask-your-cameras chat agent**: `POST /chat {question}` — the same local
+  Ollama model picks one of `count_events / list_events / get_event /
+  search_events`, runs it against SQLite, and summarises the result in a
+  sentence.
+- **Analytics**: `GET /stats?hours=24` returns per-hour / per-type /
+  per-camera / per-severity counts. New Analytics tab in the dashboard shows
+  bar charts (no chart lib, pure CSS).
+- **Privacy mode**: `GET/POST /privacy {enabled}`. Blurs the head region of
+  every detected person on the live stream, saved snapshots and clips.
+  Toggle button in the header.
+- **Evaluation script** `scripts/eval.py` (for Day 4): runs the whole
+  behaviour engine over a folder of labelled clips and dumps a CSV the paper
+  cites verbatim.
+
+### Day 3 extra deps
+`setup.bat` installs `open-clip-torch` + its tokenizer deps automatically on
+`update.bat`. First `/search` call downloads the CLIP weights (~340 MB, one
+time); after that it is offline.
+
+### Expected on `run.bat` for M3
+Dashboard header has new buttons: **Live / Analytics / Privacy**. The chat
+box lives on the Live tab under the camera grid. The Analytics tab shows
+the stats panel on the left and the CLIP search panel on the right.
+
+Try these to verify:
+- Chat: *"how many intrusions in the last hour?"* — single-sentence answer.
+- Search: *"person with backpack"* — grid of matching event snapshots.
+- Privacy ON: live feed shows blurred head regions on every bbox.

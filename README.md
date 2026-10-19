@@ -1,3 +1,5 @@
+> **Testing tomorrow?** Jump to [TEST_TOMORROW.md](TEST_TOMORROW.md) — single-page quickstart.
+
 # Smart CCTV AI
 
 Agentic, privacy-aware, multi-camera CCTV platform. Detects suspicious
