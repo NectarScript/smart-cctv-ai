@@ -24,6 +24,11 @@ if not exist ".venv" (
 )
 call .venv\Scripts\activate.bat || (echo [ERR] venv activate failed & exit /b 1)
 
+rem Slow / flaky network survival. Bumps pip timeout + retries so the big
+rem torch wheel (2.5 GB) doesn't fail on a single stall.
+set PIP_DEFAULT_TIMEOUT=120
+set PIP_RETRIES=10
+
 rem --- venv python 3.11 guard ---------------------------------------------
 rem Torch cu121 wheels for 2.5.1 only exist for Python 3.9-3.12. Plan pins
 rem 3.11. Fail fast if the venv was built with the wrong interpreter.
