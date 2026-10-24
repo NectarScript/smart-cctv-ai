@@ -3,8 +3,8 @@
 **Target branch:** `m3/day3` (contains everything from M1 + M2 + M3). Tagged `v0.3`.
 Fallback: `m1/fresh-rebuild`.
 
-**Tested on:** HP Victus 15-fb3185AX — AMD Ryzen 7 260 · 24 GB RAM ·
-NVIDIA RTX 5050 Laptop 8 GB (Blackwell) · Windows 11 Home · Python 3.11.9.
+**Target:** HP OMEN — NVIDIA RTX 4050 Laptop 6 GB (Ada) · Windows 11 · Python 3.11.9.
+Also tested on RTX 5050 Laptop 8 GB (Blackwell).
 
 **Any other NVIDIA GPU?** `setup.bat` auto-detects:
 - RTX 50-series → torch 2.7.0 + cu128

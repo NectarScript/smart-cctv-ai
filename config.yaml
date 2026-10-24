@@ -64,8 +64,8 @@ alerts:
     min_severity: "suspicious"  # "normal" | "suspicious" | "critical"
 
 vlm:
-  enabled: false            # flip to true after you confirm ollama runs
-  model: "qwen2.5vl:7b"     # 6 GB VRAM; swap to qwen2.5vl:3b (~3.2 GB) if OOM
+  enabled: false            # flip to true after `ollama pull qwen2.5vl:3b`
+  model: "qwen2.5vl:3b"     # ~3.2 GB VRAM — fits 4050 6 GB alongside YOLO + pose + CLIP
   ollama_url: "http://127.0.0.1:11434"
-  timeout_seconds: 20
+  timeout_seconds: 10
   verify_min_severity: "suspicious"

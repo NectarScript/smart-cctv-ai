@@ -2,10 +2,9 @@
 
 ## Who runs what
 - **Dev PC** (no GPU): write code with Claude, `git push`. No pip/npm here.
-- **GPU PC** (Windows 11, NVIDIA RTX 50/40-series, 8+ GB VRAM, 16+ GB RAM,
+- **GPU PC** (Windows 11, NVIDIA RTX 50/40-series, 6+ GB VRAM, 16+ GB RAM,
   Python 3.11): installs and runs everything via the four `.bat` scripts
-  below. Confirmed on: HP Victus 15-fb3185AX — Ryzen 7 260 · 24 GB RAM ·
-  RTX 5050 Laptop 8 GB · Win 11 Home.
+  below. Current target: HP OMEN — RTX 4050 Laptop 6 GB (plan's spec).
 
 `setup.bat` auto-detects the GPU generation and picks the right CUDA
 wheel:
