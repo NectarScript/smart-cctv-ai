@@ -11,23 +11,22 @@ Also tested on RTX 5050 Laptop 8 GB (Blackwell).
 - RTX 40 / 30 / 20 → torch 2.5.1 + cu121
 - No NVIDIA GPU → set `app.device: "cpu"` in `config.yaml`, no reinstall needed.
 
-## 0. Prereqs (install by hand, one time, ~30 min)
-Install these first with their official installers, then **restart the terminal**:
-1. NVIDIA driver — verify with `nvidia-smi` (any recent CUDA 12.x driver)
-2. **Python 3.11** — tick *Add Python to PATH*
-3. **Git**
-4. **Node.js 20 LTS**
-5. **ffmpeg** — put `ffmpeg.exe` on PATH
-6. (optional, for the chat/VLM features) **Ollama** — https://ollama.com/download/windows
+## 0. Prereqs — one command (installs Python 3.11, Git, Node 20, ffmpeg, Ollama)
+In the repo folder, run:
+```
+.\prereqs.bat
+```
+It uses `winget` under the hood — no manual clicking. Then close + reopen
+PowerShell so new PATH entries land. The only thing you must install by
+hand is the NVIDIA driver; verify with `nvidia-smi`.
 
-Open a fresh `cmd` and verify each is on PATH:
-```
-nvidia-smi
-python --version
-git --version
-node --version
-ffmpeg -version
-```
+Manual fallback if winget isn't available (very old Windows 10):
+- NVIDIA driver (verify with `nvidia-smi`)
+- Python 3.11.9 — tick *Add to PATH* + *py launcher*: https://www.python.org/downloads/release/python-3119/
+- Git: https://git-scm.com/download/win
+- Node 20 LTS: https://nodejs.org
+- ffmpeg: https://www.gyan.dev/ffmpeg/builds/ (add `bin\` to PATH)
+- (optional) Ollama: https://ollama.com/download/windows
 
 ## 1. Clone + checkout the latest branch
 ```
